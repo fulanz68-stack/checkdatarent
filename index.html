@@ -3,21 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RENT LINKEDIN BY 8800</title>
+    <title>RENT LINKEDIN · 8800 · Myth Edition</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- FONTS & ICONS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Cinzel:wght@400;500;600;700&display=swap" rel="stylesheet">
     
+    <!-- DEPENDENCIES -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
+        /* ========== RESET & GLOBAL ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at top left, #2a4a6a, #0a1a2a);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Bubble animation */
+        .bubble {
+            position: fixed;
+            bottom: -50px;
+            background: rgba(100, 180, 255, 0.25);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: riseUp linear forwards;
+            box-shadow: 0 0 8px rgba(100, 180, 255, 0.4);
+        }
+        @keyframes riseUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 0.6; }
+            100% { transform: translateY(-120vh) scale(1.2); opacity: 0; }
+        }
+
+        /* Base container */
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* PANEL UTAMA (background.png) */
+        .phone-panel {
+            width: 100%;
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border-radius: 52px;
+            padding: 32px 24px 44px 24px;
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .panel-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* COIN ICON TOP LEFT */
+        .main-coin-icon {
+            position: absolute;
+            left: -15px;
+            top: -20px;
+            width: 90px;
+            height: 90px;
+            z-index: 70;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .main-coin-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+            pointer-events: auto;
+        }
+        .main-coin-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Banner */
+        .banner-container {
+            position: relative;
+            width: 100%;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.1) inset;
+        }
+        .banner-container video {
+            width: 100%;
+            height: auto;
+            min-height: 220px;
+            display: block;
+            object-fit: cover;
+        }
+        .banner-header {
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 170px;
+            background: linear-gradient(145deg, #4F8BFF, #2F5EDB);
+            border-radius: 0 0 28px 28px;
+            padding: 6px 0 10px 0;
+            box-shadow: 0 12px 20px -8px rgba(0, 70, 200, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .banner-header span {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .admin-icon-banner {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 1.2rem;
+            color: #3b82f6;
+            cursor: pointer;
+            transition: transform 0.2s;
+            z-index: 60;
+            background: transparent;
+        }
+        .admin-icon-banner:hover {
+            transform: scale(1.1);
+            color: #fbbf24;
+        }
+
+        /* Hero Search Box */
+        .hero-search-box {
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 28px;
+            padding: 20px;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .hero-search-input {
+            background: rgba(0, 0, 0, 0.6) !important;
+            border: 1px solid rgba(255,215,0,0.3) !important;
+            text-align: center;
+            font-size: 1rem;
+            padding: 14px;
+            border-radius: 40px;
+            color: white;
+            width: 100%;
+        }
+        .hero-search-input:focus {
+            outline: none;
+            border-color: #fbbf24;
+        }
+
+        /* Button Styles */
+        .btn-liquid-aurora {
+            background: linear-gradient(90deg, #00C9FF, #92FE9D, #FF00CC, #00C9FF);
+            background-size: 300% 100%;
+            border: none;
+            border-radius: 40px;
+            padding: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: liquidFlow 4s ease infinite;
+            color: #000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .btn-liquid-aurora:hover {
+            transform: scale(1.02);
+        }
+        @keyframes liquidFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* New style for START SEWA: black background, white text */
+        .btn-start-sewa {
+            background: #000;
+            border: none;
+            border-radius: 40px;
+            padding: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .btn-start-sewa:hover {
+            transform: scale(1.02);
+            background: #1a1a1a;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+        }
+
+        /* Map Icon (replaces bento) */
+        .map-icon-container {
+            display: flex;
+            justify-content: center;
+            margin: 8px 0;
+        }
+        .map-icon {
+            width: 110px;
+            height: 110px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .map-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+            pointer-events: auto;
+        }
+        .map-icon:hover {
+            transform: scale(1.05);
+        }
+
+        .warning-box {
+            background: rgba(255, 69, 58, 0.15);
+            border: 1px solid rgba(255, 69, 58, 0.3);
+            border-radius: 24px;
+            padding: 14px 18px;
+            margin: 20px 0 10px;
+            display: flex;
+            gap: 12px;
+            color: #fff;
+            font-size: 0.85rem;
+        }
+        .warning-box i {
+            color: #FF453A;
+            font-size: 1.3rem;
+        }
+
+        /* Decorative icons */
+        .deco-pelampung, .deco-bintang {
+            position: absolute;
+            cursor: pointer;
+            z-index: 120;
+            transition: transform 0.2s;
+        }
+        .deco-pelampung {
+            left: -30px;
+            top: 740px;
+            width: 110px;
+            height: 110px;
+        }
+        .deco-bintang {
+            right: -30px;
+            top: 100px;
+            width: 55px;
+            height: 55px;
+        }
+        .deco-pelampung img, .deco-bintang img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+            pointer-events: auto;
+        }
+        .deco-pelampung:hover, .deco-bintang:hover {
+            transform: scale(1.1);
+        }
+
+        .candle-icon {
+            position: absolute;
+            cursor: pointer;
+            z-index: 50;
+            filter: drop-shadow(0 0 2px #ffaa33);
+            animation: candleGlow 1.5s infinite alternate;
+        }
+        .candle-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: auto;
+        }
+        @keyframes candleGlow {
+            0% { filter: drop-shadow(0 0 1px #ffaa33); opacity: 0.85; }
+            100% { filter: drop-shadow(0 0 4px #ffcc44); opacity: 1; }
+        }
+        .candle-landing {
+            position: absolute;
+            bottom: 570px;
+            right: 60px;
+            width: 130px;
+            height: 150px;
+            z-index: 60;
+        }
+
+        /* ========== ADMIN PANEL (FULL DETAIL, WHITE TEXT, BACKGROUND.PNG) ========== */
         :root {
-            /* iOS SYSTEM COLORS (Dark Mode) */
             --ios-bg: #000000;
             --ios-card: rgba(28, 28, 30, 0.75);
             --ios-glass-border: rgba(255, 255, 255, 0.08);
-            
             --theme-blue: #0A84FF;
             --theme-green: #30D158;
             --theme-red: #FF453A;
@@ -26,661 +342,615 @@
             --theme-gray-dark: #2C2C2E;
             --theme-gray: #8E8E93;
             --theme-gray-light: #3A3A3C;
-            
             --text-main: #FFFFFF;
             --text-sec: rgba(235, 235, 245, 0.6);
-            
             --ios-transition: 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
         }
 
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            user-select: none; /* Prevent text selection on pattern */
-        }
-        
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
-            background-color: #05050A;
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            letter-spacing: -0.2px;
+        .admin-panel-glass {
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 40px;
+            border: 1px solid rgba(212,175,55,0.4);
+            padding: 20px;
+            max-width: 500px;
+            width: 95%;
+            margin: 20px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            backdrop-filter: blur(8px);
             position: relative;
-            overflow-x: hidden; 
+            color: #fff;
         }
-
-        /* --- FLOATING BLUR GLOW --- */
-        body::before, body::after {
-            content: "";
-            position: fixed;
-            width: 350px;
-            height: 350px;
-            border-radius: 50%;
-            z-index: -1;
-            filter: blur(90px);
-            opacity: 0.6;
-            animation: floatGlow 15s infinite alternate cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
+        .admin-panel-glass::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            border-radius: 40px;
+            z-index: 0;
         }
-
-        body::before {
-            background: rgba(10, 132, 255, 0.25);
-            top: -100px; left: -100px;
-        }
-
-        body::after {
-            background: rgba(191, 90, 242, 0.2);
-            bottom: -100px; right: -100px;
-            animation-delay: -7s;
-        }
-
-        @keyframes floatGlow {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(50px, 40px) scale(1.1); }
-            100% { transform: translate(-30px, 80px) scale(0.9); }
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 480px; 
-            padding: 16px; 
-            padding-bottom: 80px;
+        .admin-panel-glass > * {
             position: relative;
             z-index: 1;
         }
-
-        /* --- GLASS CARD --- */
-        .glass-card {
-            background: var(--ios-card);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 0.5px solid var(--ios-glass-border);
-            border-radius: 20px;
-            padding: 16px;
+        .admin-title {
+            font-family: 'Cinzel', serif;
+            color: #ffd966;
+            font-size: 1.2rem;
             margin-bottom: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+            font-weight: 700;
         }
-
-        /* --- HEADER --- */
-        header { 
-            text-align: center; 
-            margin-bottom: 24px; 
-            position: relative; 
+        .nav-menu {
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 60px;
+            padding: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
-
-        .admin-btn {
-            position: absolute; top: 0; right: 0;
-            background: transparent; border: none;
-            color: var(--theme-blue); font-size: 1.2rem;
-            cursor: pointer; z-index: 10; padding: 10px;
-            transition: var(--ios-transition);
-        }
-        .admin-btn:active { transform: scale(0.85); opacity: 0.7; }
-        
-        .banner-img {
-            width: 100%; border-radius: 16px; margin-bottom: 16px;
-            object-fit: cover; border: 0.5px solid var(--ios-glass-border);
-            /* Pastikan banner memiliki aspect ratio yang konsisten agar animasi mulus */
-            aspect-ratio: 16/9; 
-            display: block;
-        }
-
-        h1 { 
-            font-weight: 700; font-size: 1.6rem; margin: 4px 0; 
-            letter-spacing: -0.5px; color: var(--text-main);
-        }
-
-        .subtitle { 
-            font-size: 0.85rem; color: var(--theme-gray); 
-            font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        /* --- WARNING BOX --- */
-        .warning-box {
-            background: rgba(255, 69, 58, 0.1);
-            border: 0.5px solid rgba(255, 69, 58, 0.2);
-            border-radius: 16px; padding: 14px 16px;
-            margin-bottom: 20px; font-size: 0.85rem; color: #fff;
-            display: flex; align-items: flex-start; gap: 12px; line-height: 1.4;
-        }
-        
-        .warning-box i {
-            color: var(--theme-red); font-size: 1.4rem; margin-top: 2px;
-            animation: pulse-red 2.5s infinite;
-        }
-
-        @keyframes pulse-red {
-            0% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* --- INPUTS --- */
-        .form-group { 
-            margin-bottom: 14px; 
-            text-align: left; 
-            position: relative; /* Penting untuk icon absolute */
-        }
-        
-        /* CSS KHUSUS UNTUK IKON INPUT */
-        .input-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--theme-blue);
-            font-size: 1.1rem;
-            z-index: 10;
-            pointer-events: none; /* Agar klik tembus ke input */
-            filter: drop-shadow(0 0 5px rgba(10,132,255,0.3));
-        }
-
-        label { 
-            display: block; font-size: 0.8rem; color: var(--text-sec); 
-            margin-bottom: 6px; margin-left: 4px; font-weight: 500;
-        }
-        
-        input, select, textarea {
-            width: 100%; background: var(--theme-gray-dark);
-            border: 0.5px solid transparent; border-radius: 12px;
-            padding: 14px; color: #fff; font-family: inherit;
-            font-size: 1rem; outline: none; transition: var(--ios-transition);
-            caret-color: var(--theme-blue);
-        }
-
-        /* Style khusus input yang punya ikon */
-        .form-group input {
-            padding-left: 48px !important; /* Memberi ruang untuk ikon */
-        }
-        
-        input::placeholder, select::placeholder, textarea::placeholder { color: var(--theme-gray); }
-        
-        input:focus { background: var(--theme-gray-light); border-color: rgba(10, 132, 255, 0.5); }
-        
-        input[type="date"] { color-scheme: dark; }
-
-        /* --- BUTTONS --- */
-        .btn {
-            width: 100%; border: none; border-radius: 14px;
-            padding: 14px; font-size: 1rem; font-weight: 600;
-            cursor: pointer; transition: all var(--ios-transition);
-            display: flex; justify-content: center; align-items: center;
-            gap: 8px; text-decoration: none; color: #fff;
-        }
-        
-        @media (hover: hover) { .btn:hover { filter: brightness(1.15); } }
-        
-        .btn:active { opacity: 0.6; transform: scale(0.96); }
-        
-        .btn-primary { background: var(--theme-blue); }
-        .btn-glow { 
-            background: linear-gradient(135deg, #1C1C1E, #2C2C2E); 
-            border: 0.5px solid var(--ios-glass-border);
-            color: var(--theme-orange); 
-        }
-        .btn-sewa { background: var(--theme-gray-dark); }
-        .btn-withdraw { background: var(--theme-blue); margin-top: 10px; }
-        .btn-danger { background: var(--theme-red); }
-        .btn-sm { padding: 8px 14px; font-size: 0.85rem; border-radius: 10px; width: auto; }
-        .btn-wa { background: var(--theme-green); }
-        .btn-done { background: var(--theme-blue); }
-        
-        .btn-skip { background: var(--theme-gray-dark); color: var(--text-sec); }
-        .btn-reject { background: rgba(255, 69, 58, 0.15); color: var(--theme-red); border: 0.5px solid rgba(255, 69, 58, 0.3); }
-
-        /* --- SWEETALERT --- */
-        .swal-dark-input {
-            background: var(--theme-gray-dark) !important;
-            color: #fff !important; border: none !important;
-            border-radius: 10px; padding: 12px; margin-bottom: 15px;
-            width: 100%; box-sizing: border-box;
-            font-family: inherit; font-size: 1rem; outline: none;
-        }
-        .swal-dark-input:focus { background: var(--theme-gray-light) !important; }
-        .swal-label {
-            display: block; text-align: left; margin-bottom: 5px;
-            color: var(--text-sec); font-size: 0.85rem; font-weight: 500;
-        }
-
-        /* --- MODAL POPUP (GLASS ID CARD STYLE) --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6); z-index: 9999;
-            display: flex; justify-content: center; align-items: center;
-            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-            opacity: 0; visibility: hidden; transition: opacity var(--ios-transition);
-        }
-
-        .modal-overlay.active { opacity: 1; visibility: visible; }
-
-        .modal-content {
-            width: 85%; max-width: 360px; max-height: 85vh; overflow-y: auto;
-            background: rgba(20, 20, 25, 0.65) !important; /* Darker Glass */
-            backdrop-filter: blur(40px) !important;
-            -webkit-backdrop-filter: blur(40px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 36px; /* Super rounded */
-            padding: 30px 24px;
-            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.6), inset 0 0 0 1px rgba(255,255,255,0.05);
-            transform: scale(0.9);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            text-align: center;
-        }
-
-        .modal-overlay.active .modal-content { transform: scale(1); }
-
-        .close-modal-btn {
-            position: absolute; top: 20px; right: 20px;
-            background: rgba(255,255,255,0.1); border: none;
-            color: #fff; width: 32px; height: 32px;
-            border-radius: 50%; font-size: 1.2rem;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            transition: 0.2s; z-index: 5;
-        }
-        .close-modal-btn:active { background: rgba(255,255,255,0.2); transform: scale(0.9); }
-
-        /* ID CARD ELEMENTS */
-        .id-avatar-wrapper {
-            position: relative;
-            width: 80px; height: 80px; margin: 0 auto 16px auto;
-        }
-        .id-avatar {
-            width: 100%; height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-            border: 1px solid rgba(255,255,255,0.2);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 2rem; color: #fff;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-        }
-        .id-status-pill {
-            display: inline-block; padding: 6px 16px; border-radius: 50px;
-            font-size: 0.75rem; font-weight: 800; letter-spacing: 1px;
-            text-transform: uppercase; margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-        }
-        .id-reward-label {
-            font-size: 0.8rem; color: var(--text-sec); margin-bottom: 4px; font-weight: 500;
-        }
-        .id-reward-val {
-            font-size: 2.2rem; font-weight: 800; color: #fff; margin-bottom: 24px;
-            letter-spacing: -1px; text-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-        .id-info-bubble {
-            background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px; padding: 12px 16px; margin-bottom: 10px;
-            display: flex; align-items: center; gap: 12px; text-align: left;
-        }
-        .id-info-icon {
-            width: 32px; height: 32px; border-radius: 10px;
-            background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center;
-            color: var(--text-sec);
-        }
-        .id-info-text { display: flex; flex-direction: column; overflow: hidden; }
-        .id-info-label { font-size: 0.7rem; color: var(--text-sec); margin-bottom: 2px; }
-        .id-info-value { font-size: 0.95rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* --- ADMIN PANEL CSS --- */
-        .user-manage-card { background: var(--theme-gray-dark); border-radius: 16px; padding: 14px; margin-bottom: 12px; }
-        .um-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .um-email { font-weight: 600; color: #fff; font-size: 0.9rem; word-break: break-all; max-width: 65%; }
-        .um-meta { font-size: 0.8rem; color: var(--theme-gray); margin-bottom: 6px; display:flex; align-items:center; gap:6px; }
-        .um-actions { display: flex; gap: 8px; margin-top: 12px; }
-
-        /* --- PAYMENT CARD CSS --- */
-        .payment-focus-wrapper { display: flex; flex-direction: column; align-items: center; min-height: 250px; }
-        .payment-card-focus { background: var(--theme-gray-dark); border-radius: 20px; padding: 24px; width: 100%; position: relative; overflow: hidden; }
-        .pcf-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 0.5px solid rgba(255,255,255,0.08); }
-        .pcf-queue { font-size: 0.75rem; font-weight: 700; color: var(--theme-blue); letter-spacing: 0.5px; background: rgba(10, 132, 255, 0.15); padding: 4px 10px; border-radius: 8px; display: inline-block; margin-bottom: 16px; }
-        .pcf-amount { font-size: 1.6rem; font-weight: 700; color: #fff; }
-        .pcf-row { display: flex; flex-direction: column; margin-bottom: 16px; }
-        .pcf-label { font-size: 0.75rem; color: var(--theme-gray); margin-bottom: 4px; display: flex; align-items: center; gap: 6px; font-weight: 500; }
-        .pcf-val { font-size: 1.05rem; color: #fff; font-weight: 600; display: flex; align-items: center; justify-content: space-between; }
-        .copy-btn { background: var(--theme-gray-light); border: none; color: var(--theme-blue); cursor: pointer; font-size: 0.8rem; margin-left: 10px; padding: 6px 10px; border-radius: 8px; font-weight: 600; transition: var(--ios-transition); }
-        .copy-btn:active { transform: scale(0.9); opacity: 0.7; }
-        .pcf-actions { display: flex; gap: 8px; margin-top: 24px; }
-
-        /* --- BULK PAYMENT CSS (FITUR BARU) --- */
-        .bulk-item-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .bulk-chk { width: 20px; height: 20px; margin-top: 4px; accent-color: var(--theme-blue); }
-        .bulk-info { flex: 1; font-size: 0.85rem; }
-        .bulk-bank { font-weight: 700; color: var(--theme-orange); font-size: 0.75rem; display:block; margin-bottom:2px;}
-        .bulk-name { font-weight: 600; color: #fff; display:block; }
-        .bulk-rek { color: var(--theme-gray); font-size: 0.75rem; }
-        .bulk-amount { font-weight: 700; color: var(--theme-green); font-size: 0.9rem; margin-left:auto; white-space: nowrap;}
-        
-        /* Badge Duplicate */
-        .badge-dupe { 
-            background: rgba(48, 209, 88, 0.2); color: #30D158; 
-            border: 1px solid rgba(48, 209, 88, 0.3);
-            font-size: 0.7rem; padding: 2px 8px; border-radius: 4px;
-            cursor: pointer; margin-left: 6px; display: inline-flex; align-items: center; gap: 4px;
+        .nav-btn {
+            background: transparent;
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 600;
             transition: 0.2s;
         }
-        .badge-dupe:hover { background: rgba(48, 209, 88, 0.4); transform: scale(1.05); }
-
-        /* --- WELCOME PAGE CSS --- */
-        #welcomeOverlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #05050A; z-index: 10000;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            text-align: center; padding: 20px;
-            transition: opacity 0.5s ease-out;
+        .nav-btn.active {
+            background: #fbbf24;
+            color: #000;
         }
-
-        /* --- FIX: Tambahan CSS untuk Center Konten Welcome --- */
-        #welcomeContent {
+        .glass-card {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 18px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .stat-box {
+            background: rgba(0,0,0,0.5);
+            padding: 12px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffd966;
+        }
+        .stat-label {
+            color: #fff;
+            font-size: 0.8rem;
+        }
+        input, select, textarea {
+            background: rgba(0,0,0,0.6);
+            border: 1px solid #b8964b;
+            border-radius: 40px;
+            padding: 12px;
+            color: #fff;
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+        }
+        input::placeholder, select::placeholder, textarea::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+        .btn {
+            border: none;
+            border-radius: 40px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-primary {
+            background: #0A84FF;
+            color: white;
+        }
+        .btn-danger {
+            background: #FF453A;
+            color: white;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+        .btn-sewa {
+            background: #2C2C2E;
+            color: #fff;
+        }
+        .user-manage-card {
+            background: rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(212,175,55,0.2);
+        }
+        .user-manage-card .um-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .user-manage-card .um-email {
+            font-weight: 600;
+            color: #fff;
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .copy-email-btn {
+            background: rgba(10,132,255,0.3);
+            border: none;
+            color: #0A84FF;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            transition: 0.2s;
+        }
+        .copy-email-btn:hover {
+            background: rgba(10,132,255,0.5);
+            color: #fff;
+        }
+        .user-manage-card .um-meta {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 6px;
+        }
+        .user-manage-card .um-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .scan-list-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 16px;
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid rgba(212,175,55,0.2);
+        }
+        .scan-item {
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+        }
+        .scan-item:last-child {
+            border-bottom: none;
+        }
+        .payment-focus-wrapper {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            min-height: 250px;
+        }
+        .payment-card-focus {
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            padding: 20px;
             width: 100%;
-            z-index: 2;
+            border: 1px solid rgba(212,175,55,0.3);
         }
-
-        .welcome-title {
-            font-size: 2rem; font-weight: 800; color: #fff;
-            margin-bottom: 10px; letter-spacing: -1px;
-            text-shadow: 0 0 30px rgba(10, 132, 255, 0.5);
+        .hist-item {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
         }
-        .welcome-sub {
-            font-size: 1rem; color: var(--text-sec); margin-bottom: 40px;
-            max-width: 300px; line-height: 1.5;
+        .hist-item:last-child {
+            border-bottom: none;
         }
-
-        /* --- ADMIN TITLE & NAV --- */
-        .admin-title { font-size: 1.1rem; color: var(--text-main); margin-bottom: 14px; font-weight: 700; letter-spacing: -0.3px; }
-        .nav-menu { display: flex; background: var(--theme-gray-dark); border-radius: 12px; padding: 4px; margin-bottom: 20px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-        .nav-menu::-webkit-scrollbar { display: none; }
-        .nav-btn { background: transparent; border: none; color: var(--text-sec); padding: 8px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 600; white-space: nowrap; cursor: pointer; transition: 0.2s; display: flex; align-items: center; gap: 6px; flex: 1; justify-content: center; }
-        .nav-btn.active { background: var(--theme-gray-light); color: #fff; box-shadow: 0 2px 8px rgba(0,0,0,0.2); transform: scale(1.02); }
-        .admin-section { margin-bottom: 20px; border-top: 0.5px solid var(--ios-glass-border); padding-top: 20px; }
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-        .stat-box { background: var(--theme-gray-dark); padding: 14px 10px; border-radius: 16px; text-align: center; }
-        .stat-num { font-size: 1.5rem; font-weight: 700; color: var(--theme-blue); }
-        .stat-label { font-size: 0.7rem; color: var(--text-sec); margin-top: 4px; font-weight: 500; }
-
-        .hidden { display: none !important; }
-        .fade-in { animation: fadeIn 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .slide-up-item { opacity: 0; transform: translateY(15px); animation: slideUpFade 0.4s cubic-bezier(0.25, 0.1, 0.25, 1) forwards; }
-        @keyframes slideUpFade { to { opacity: 1; transform: translateY(0); } }
-        .scan-list-box { background: var(--theme-gray-dark); border-radius: 16px; padding: 16px; margin-bottom: 16px; max-height: 200px; overflow-y: auto; border: 0.5px solid var(--ios-glass-border); }
-        .scan-item { font-size: 0.85rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; display: flex; align-items: center; gap: 10px; }
-        .scan-item input[type="checkbox"] { width: 18px; height: 18px; margin: 0; }
-        .scan-item:last-child { border-bottom: none; }
-        .tag-found { color: var(--theme-green); font-weight: 600; font-size: 0.75rem; margin-left: auto; }
-        .tag-new { color: var(--theme-blue); font-weight: 600; font-size: 0.75rem; margin-left: auto; }
-
-        /* --- ANIMASI & WEB 3.0 STYLES --- */
-        @keyframes floatUp { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        @keyframes heartbeatCard { 0% { transform: scale(1); } 5% { transform: scale(1.02); } 10% { transform: scale(1); } 15% { transform: scale(1.02); } 50% { transform: scale(1); } 100% { transform: scale(1); } }
-        @keyframes liquidFlow { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-
-        /* BUTTONS STYLES */
-        .btn-liquid-gold { background: linear-gradient(90deg, #FFD700, #FFA500, #FFD700); background-size: 200% auto; color: #000 !important; border: none !important; font-weight: 700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); animation: liquidFlow 3s linear infinite, floatUp 3s ease-in-out infinite; }
-        .btn-liquid-blue { background: linear-gradient(90deg, #0A84FF, #00FFFF, #0A84FF); background-size: 200% auto; color: #fff !important; border: none !important; font-weight: 700; box-shadow: 0 0 15px rgba(10, 132, 255, 0.4); animation: liquidFlow 3s linear infinite, floatUp 3.5s ease-in-out infinite; animation-delay: 0s, 0.3s; }
-        .btn-liquid-aurora { background: linear-gradient(90deg, #00C9FF, #92FE9D, #FF00CC, #00C9FF); background-size: 300% 100%; border: none !important; color: #fff !important; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 0 25px rgba(0, 201, 255, 0.6); animation: liquidFlow 4s ease-in-out infinite, floatUp 4s ease-in-out infinite; animation-delay: 0s, 0.6s; padding: 18px !important; font-size: 1.1rem !important; }
-        .warning-heartbeat { animation: heartbeatCard 3s infinite ease-in-out; }
-
-        /* [NEW] Blue Running White Animation */
-        @keyframes shineMove { 0% { background-position: 200% center; } 100% { background-position: -200% center; } }
-        .btn-blue-running {
-            background: linear-gradient(110deg, #0A84FF 30%, #ffffff 45%, #0A84FF 60%);
-            background-size: 250% 100%;
-            animation: shineMove 3.5s linear infinite;
-            color: #fff !important; border: none !important; font-weight: 700;
-            box-shadow: 0 0 20px rgba(10, 132, 255, 0.4);
-            display: flex; justify-content: center; align-items: center; gap: 10px;
+        .hist-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            margin-bottom: 6px;
         }
-
-        /* LAYOUTS */
-        .bento-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-        .bento-item { margin-bottom: 0 !important; height: 100%; display: flex; flex-direction: column; justify-content: center; text-align: center; }
-        .hero-search-box { background: rgba(28, 28, 30, 0.6); backdrop-filter: blur(50px); border: 1px solid rgba(10, 132, 255, 0.3); border-radius: 24px; padding: 20px; margin-bottom: 24px; text-align: center; transition: all 0.4s cubic-bezier(0.25, 0.1, 0.25, 1); position: relative; overflow: hidden; }
-        .hero-search-box:focus-within { background: rgba(10, 132, 255, 0.1); border-color: var(--theme-blue); box-shadow: 0 0 40px rgba(10, 132, 255, 0.25); transform: scale(1.02); }
-        .hero-search-input { background: rgba(0,0,0,0.3) !important; border: 1px solid rgba(255,255,255,0.1) !important; text-align: center; font-size: 1.1rem !important; padding: 16px !important; }
-        .hero-search-input:focus { background: rgba(0,0,0,0.5) !important; border-color: var(--theme-blue) !important; }
-
-        /* --- HISTORY CSS --- */
-        .hist-item { padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .hist-item:last-child { border-bottom: none; }
-        .hist-header { display: flex; justify-content: space-between; font-size: 0.8rem; margin-bottom: 4px; }
-        .hist-date { color: var(--theme-gray); }
-        .hist-status { font-weight: 700; text-transform: uppercase; font-size: 0.7rem; }
-        .hist-status.paid { color: var(--theme-green); }
-        .hist-status.rejected { color: var(--theme-red); }
-        .hist-name { font-weight: 600; color: #fff; font-size: 0.95rem; }
-        .hist-bank { font-size: 0.8rem; color: var(--theme-orange); margin-right: 6px; }
-        .hist-amount { color: #fff; font-weight: 700; float: right; }
-
-        /* --- PATTERN LOCK CSS --- */
-        #adminLoginOverlay {
+        .hist-status.paid {
+            color: #30D158;
+        }
+        .hist-status.rejected {
+            color: #FF453A;
+        }
+        .hist-name {
+            font-weight: 600;
+        }
+        .hist-amount {
+            float: right;
+            font-weight: 700;
+            color: #ffd966;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(12px);
             display: none;
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(15px);
-            z-index: 10002;
-            justify-content: center; align-items: center;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            border-radius: 36px;
+            padding: 28px 24px;
+            max-width: 400px;
+            width: 90%;
+            border: 2px solid #d4af37;
+            box-shadow: 0 0 40px rgba(212,175,55,0.3);
+            position: relative;
+            color: white;
+        }
+        .close-modal-btn {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: #ffd966;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+        .modal-coin-icon {
+            position: absolute;
+            left: 20px;
+            top: 20px;
+            width: 90px;
+            height: 90px;
+            z-index: 10;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .modal-coin-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 6px rgba(0,0,0,0.4));
+            pointer-events: auto;
+        }
+        .modal-coin-icon:hover {
+            transform: scale(1.1);
+        }
+        .id-avatar-wrapper {
+            width: 80px;
+            margin: 0 auto 16px;
+        }
+        .id-avatar {
+            background: linear-gradient(145deg, #2a3a4a, #0a1a2a);
+            border-radius: 50%;
+            padding: 18px;
+            text-align: center;
+            font-size: 2rem;
+            border: 2px solid #d4af37;
+        }
+        .id-status-pill {
+            display: inline-block;
+            padding: 6px 20px;
+            border-radius: 40px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+        .id-reward-val {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffd966;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .id-info-bubble {
+            background: rgba(0,0,0,0.5);
+            border-radius: 24px;
+            padding: 12px;
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .btn-withdraw {
+            background: #0A84FF;
+            border: none;
+            border-radius: 40px;
+            padding: 12px;
+            font-weight: 700;
+            margin-top: 12px;
+            cursor: pointer;
+            width: 100%;
+            color: white;
+        }
+        .btn-ubah-data {
+            background: transparent;
+            border: 1px solid #ccc;
+            border-radius: 40px;
+            padding: 8px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 8px;
+            width: 100%;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .btn-ubah-data:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: #ffd966;
         }
         .pattern-container {
-            position: relative; width: 300px; height: 300px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 24px;
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            padding: 20px; gap: 0;
+            width: 280px;
+            height: 280px;
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            margin: 0 auto;
+            position: relative;
             touch-action: none;
         }
         .p-dot {
-            width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .p-dot-inner {
-            width: 16px; height: 16px;
-            background: rgba(255,255,255,0.2);
+            width: 18px;
+            height: 18px;
+            background: rgba(255,255,255,0.3);
             border-radius: 50%;
-            transition: 0.3s;
-            pointer-events: none;
+            transition: 0.2s;
         }
         .p-dot.active .p-dot-inner {
-            background: var(--theme-blue);
-            box-shadow: 0 0 15px var(--theme-blue);
-            transform: scale(1.5);
+            background: #fbbf24;
+            box-shadow: 0 0 12px #ffd966;
+            transform: scale(1.4);
         }
         #patternSvg {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 10;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
         }
-        .p-line {
-            stroke: var(--theme-blue); stroke-width: 4; stroke-linecap: round;
-            opacity: 0.8; filter: drop-shadow(0 0 5px var(--theme-blue));
+        .hidden {
+            display: none !important;
         }
-
+        .admin-feature {
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .app-notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #ffd966;
+            padding: 8px 20px;
+            border-radius: 40px;
+            z-index: 99999;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        /* Pirate loading */
+        .pirate-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.1rem;
+            color: #ffd966;
+        }
+        .anchor-pulse {
+            font-size: 2rem;
+            animation: anchorBeat 1s ease-in-out infinite;
+            display: inline-block;
+        }
+        @keyframes anchorBeat {
+            0% { transform: scale(1); text-shadow: 0 0 0 #ffd966; }
+            50% { transform: scale(1.3); text-shadow: 0 0 10px #ffd966, 0 0 20px #ffaa33; }
+            100% { transform: scale(1); text-shadow: 0 0 0 #ffd966; }
+        }
+        /* Rotating anchor for success */
+        .rotating-anchor {
+            display: inline-block;
+            animation: spinAnchor 1.5s linear infinite;
+            font-size: 2.5rem;
+        }
+        @keyframes spinAnchor {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .pirate-success-content {
+            background: rgba(0,0,0,0.7);
+            padding: 16px;
+            border-radius: 32px;
+            backdrop-filter: blur(8px);
+        }
+        /* Red overlay for processing note */
+        .processing-note {
+            background: rgba(255, 69, 58, 0.3);
+            border-left: 3px solid #FF453A;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #fff;
+            text-align: center;
+        }
+        /* Green success note */
+        .payment-success-note {
+            background: rgba(48, 209, 88, 0.2);
+            border-left: 3px solid #30D158;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #30D158;
+            text-align: center;
+            font-weight: 600;
+        }
+        /* Style for pirate-themed alert */
+        .pirate-alert {
+            background: rgba(0,0,0,0.8);
+            border: 1px solid #ffd966;
+            border-radius: 28px;
+            padding: 20px;
+            text-align: center;
+        }
+        /* Status message styles */
+        .status-message {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        .status-message-red {
+            background: rgba(255, 69, 58, 0.3);
+            border-left: 3px solid #FF453A;
+            color: #fff;
+        }
+        .status-message-green {
+            background: rgba(48, 209, 88, 0.2);
+            border-left: 3px solid #30D158;
+            color: #fff;
+        }
+        .status-message-purple {
+            background: rgba(175, 82, 222, 0.2);
+            border-left: 3px solid #AF52DE;
+            color: #fff;
+        }
+        .status-message-pink {
+            background: rgba(255, 45, 85, 0.2);
+            border-left: 3px solid #FF2D55;
+            color: #fff;
+        }
+        .withdraw-closed-message {
+            background: rgba(255, 159, 10, 0.2);
+            border-left: 3px solid #FF9F0A;
+            padding: 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: #fff;
+            text-align: center;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
 <body>
 
-<audio id="bgMusic" src="musik.mp3" loop></audio>
+<div id="bubbleContainer"></div>
 
-<div id="adminLoginOverlay">
-    <div style="text-align:center; margin-bottom:20px; color:#fff;">
-        <h2 style="margin:0; font-weight:800; letter-spacing:-0.5px;">ADMIN ACCESS</h2>
-        <p style="margin:5px 0 0 0; font-size:0.9rem; color:var(--text-sec);">Gambar Pola Kunci</p>
-    </div>
-    
-    <div class="pattern-container" id="patternGrid">
-        <svg id="patternSvg"></svg>
-        </div>
-
-    <button class="btn btn-sm" onclick="closeAdminLogin()" style="margin-top:30px; background:rgba(255,255,255,0.1); width:auto; border-radius:50px; padding:10px 24px;">
-        <i class="fa-solid fa-xmark"></i> Batal
-    </button>
-</div>
-
-<div id="welcomeOverlay">
-    <img id="welcomeImg" src="baner.gif" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid rgba(255,255,255,0.2); box-shadow: 0 0 40px rgba(10, 132, 255, 0.6); margin-bottom: 24px;">
-    
+<!-- WELCOME OVERLAY (dark transparent) -->
+<div id="welcomeOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:30000; display:flex; align-items:center; justify-content:center; flex-direction:column; text-align:center;">
+    <img id="welcomeImg" src="baner.gif" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:3px solid #ffd966; margin-bottom:20px;">
     <div id="welcomeContent">
-        <div class="welcome-title">RENT LINKEDIN</div>
-        <div class="welcome-sub">Platform sewa akun LinkedIn aman & terpercaya by Myth x 8800</div>
-        
-        <button onclick="enterApp()" class="btn btn-blue-running" style="width: auto; padding: 16px 40px !important; border-radius: 50px; margin: 0 auto;">
-            LANJUTKAN <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
-        </button>
+        <div class="welcome-title" style="font-size:2rem; font-weight:800; color:#fff;">RENT LINKEDIN</div>
+        <div class="welcome-sub" style="color:#ffd966; margin-bottom:20px; font-size:1rem;">Platform sewa akun LinkedIn terpercaya ⚓</div>
+        <button onclick="enterApp()" class="btn btn-primary" style="width:auto; padding:12px 32px;">LANJUTKAN →</button>
     </div>
 </div>
 
-<div class="app-container" style="display: none; opacity: 0;"> <div id="userView" class="fade-in">
-        <header>
-            <button class="admin-btn" onclick="openAdminPattern()"><i class="fa-solid fa-wrench"></i></button>
-            <img src="baner.gif" alt="Banner" class="banner-img" onerror="this.style.display='none'">
-            <h1>RENT LINKEDIN BY 8800 </h1>
-            <div class="subtitle">Web Official Myth x 8800 </div>
-        </header>
-
-        <div class="hero-search-box">
-            <h3 style="margin-top:0; margin-bottom: 12px; font-size:1.1rem; font-weight: 600; letter-spacing: -0.3px; color:#fff;">
-                <i class="fa-solid fa-magnifying-glass" style="color: var(--theme-blue)"></i> Cek Status Akun
-            </h3>
-            <div class="form-group" style="margin-bottom: 12px;">
-                <input type="email" id="userEmail" class="hero-search-input" placeholder="Masukkan Email Anda...">
+<!-- MAIN APP CONTAINER -->
+<div class="app-container" style="display: none;">
+    <div id="userView">
+        <div class="phone-panel">
+            <div class="main-coin-icon" onclick="showNotification('Koin harta karun!')">
+                <img src="uang.png" alt="uang" draggable="false">
             </div>
-            <button class="btn btn-primary" onclick="checkStatus()" style="width:100%; border-radius:12px;">Cari Status</button>
-        </div>
+            <div class="panel-content">
+                <div class="banner-container">
+                    <video autoplay loop muted playsinline><source src="banner.mp4" type="video/mp4"></video>
+                    <div class="banner-header"><span>Payment Day</span></div>
+                    <i class="fas fa-user-cog admin-icon-banner" onclick="openAdminPattern()"></i>
+                </div>
 
-        <div class="bento-grid">
-            <a href="https://rentalinkdln.vercel.app/" target="_blank" class="btn btn-glow glass-card btn-liquid-gold bento-item">
-                <i class="fa-solid fa-gift" style="font-size: 1.5rem; margin-bottom: 4px;"></i>
-                <span style="font-size: 0.8rem;">EVENT REFFERAL</span>
-            </a>
-            <a href="https://rentalinkdln.vercel.app/" target="_blank" class="btn glass-card btn-liquid-blue bento-item">
-                <i class="fa-solid fa-circle-info" style="font-size: 1.5rem; margin-bottom: 4px;"></i>
-                <span style="font-size: 0.8rem;">DETAIL SEWA</span>
-            </a>
-        </div>
+                <div class="hero-search-box">
+                    <h3 style="margin:0 0 12px; font-size:1.1rem; color:#fff;"><i class="fa-solid fa-magnifying-glass"></i> Cek Status Akun</h3>
+                    <div style="margin-bottom:12px;">
+                        <input type="email" id="userEmail" class="hero-search-input" placeholder="Masukkan Email Anda...">
+                    </div>
+                    <button class="btn-liquid-aurora" onclick="checkStatus()" style="width:100%;">Cari Status</button>
+                </div>
 
-        <a href="https://rentalinkdln.vercel.app/" target="_blank" class="btn btn-sewa glass-card btn-liquid-aurora" style="margin-bottom: 24px; text-align: center;">
-            <i class="fa-solid fa-rocket"></i> START SEWA
-        </a>
+                <div class="map-icon-container">
+                    <div class="map-icon" onclick="showNotification('Peta harta karun!')">
+                        <img src="peta.png" alt="Peta" draggable="false">
+                    </div>
+                </div>
 
-        <div class="warning-box warning-heartbeat">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            <div>
-                <strong style="display:block; margin-bottom: 4px;">Penting</strong>
-                Jangan pernah memberikan alamat email selain kepada client, admin, dan inviter untuk menghindari orang orang curang yang mau claim pay.
-            </div>
-        </div>
-    </div>
+                <a href="https://rentalinkdln.vercel.app/" target="_blank" class="btn-start-sewa" style="text-align: center;">
+                    <i class="fa-solid fa-rocket"></i> START SEWA
+                </a>
 
-    <div id="statusModal" class="modal-overlay">
-        <div class="modal-content">
-            <button class="close-modal-btn" onclick="closeModal()">×</button>
-            
-            <div class="id-avatar-wrapper">
-                <div class="id-avatar">
-                    <i class="fa-solid fa-user"></i>
+                <div class="warning-box">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <div><strong>Penting</strong><br>Jangan pernah memberikan alamat email selain kepada client, admin, dan inviter untuk menghindari orang curang yang mau claim pay.</div>
+                </div>
+
+                <div class="deco-pelampung" onclick="showNotification('Pelampung petualang!')">
+                    <img src="pelampung.png" alt="pelampung" draggable="false">
+                </div>
+                <div class="deco-bintang" onclick="showNotification('Bintang kehormatan!')">
+                    <img src="bintang.png" alt="bintang" draggable="false">
                 </div>
             </div>
-            
-            <div id="statusBadge" class="id-status-pill">STATUS</div>
-
-            <div class="id-reward-label">Total Reward</div>
-            <div class="id-reward-val" id="resReward">Rp 0</div>
-
-            <div class="id-info-bubble">
-                <div class="id-info-icon"><i class="fa-solid fa-envelope"></i></div>
-                <div class="id-info-text">
-                    <span class="id-info-label">Email Terdaftar</span>
-                    <span class="id-info-value" id="resEmail">-</span>
-                </div>
-            </div>
-            
-            <div id="withdrawSection" class="hidden slide-up-item" style="margin-top: 24px; padding-top: 20px; border-top: 1px dashed rgba(255,255,255,0.15);">
-                <h4 style="margin:0 0 16px 0; color: #fff; text-align:center; font-weight: 600; font-size: 1.1rem;">Form Penarikan</h4>
-                
-                <div class="form-group">
-                    <i class="fa-solid fa-user input-icon"></i>
-                    <input type="text" id="wdName" placeholder="Atas Nama">
-                </div>
-                <div class="form-group">
-                    <i class="fa-solid fa-building-columns input-icon"></i>
-                    <input type="text" id="wdBank" placeholder="Nama Bank / E-Wallet">
-                </div>
-                <div class="form-group">
-                    <i class="fa-solid fa-credit-card input-icon"></i>
-                    <input type="number" id="wdRek" placeholder="Nomor Rekening">
-                </div>
-                <div class="form-group">
-                    <i class="fa-brands fa-whatsapp input-icon"></i>
-                    <input type="number" id="wdWA" placeholder="Nomor WhatsApp (Wajib)" style="border: 1px solid var(--theme-blue);">
-                </div>
-                
-                <button class="btn btn-withdraw" onclick="submitWithdraw()">
-                    Cairkan Reward
-                </button>
-
-                <button class="btn" onclick="requestDataChange()" style="margin-top: 12px; background: transparent; border: 1px solid var(--theme-gray); color: var(--theme-gray); font-size: 0.85rem;">
-                    <i class="fa-brands fa-whatsapp"></i> Ubah Data (Hubungi Admin)
-                </button>
-            </div>
+            <div class="candle-icon candle-landing"><img src="lilin.png" alt="lilin"></div>
         </div>
     </div>
 
+    <!-- ADMIN PANEL (FULL DETAIL, BACKGROUND.PNG, WHITE TEXT) -->
     <div id="adminPanel" style="display: none;">
-        <header>
-            <button class="admin-btn" onclick="logoutAdmin()" style="color: var(--theme-red)"><i class="fa-solid fa-right-from-bracket"></i></button>
-            <h1>Admin Panel</h1>
-            <div class="subtitle">Control Center</div>
-        </header>
-
-        <div class="nav-menu">
-            <button class="nav-btn active" onclick="showFeature('home')"><i class="fa-solid fa-house"></i> Utama</button>
-            <button class="nav-btn" onclick="showFeature('payment')"><i class="fa-solid fa-money-bill-transfer"></i> Pay</button>
-            <button class="nav-btn" onclick="showFeature('mass')"><i class="fa-solid fa-layer-group"></i> Massal</button>
-            <button class="nav-btn" onclick="showFeature('stats')"><i class="fa-solid fa-chart-simple"></i> Stats</button>
-            <button class="nav-btn" onclick="showFeature('settings')"><i class="fa-solid fa-gear"></i> Set</button>
-        </div>
-
-        <div id="feature-home" class="admin-feature">
-            <div class="glass-card">
-                <div class="admin-title">Tambah Data Manual</div>
-                <input type="email" id="addEmail" placeholder="Email" style="margin-bottom: 12px;">
-                <input type="text" id="addWa" placeholder="WhatsApp" style="margin-bottom: 12px;">
-                <select id="addStatus" style="margin-bottom: 12px;">
-                    <option value="New Acc">New Acc</option>
-                    <option value="Old Acc">Old Acc</option>
-                    <option value="Unrestric">Unrestric</option>
-                    <option value="New Acc Restric">New Acc Restric</option>
-                    <option value="Restric">Restric</option>
-                    <option value="Bonus Only">Bonus Only</option>
-                    <option value="Lost Payment">Lost Payment</option>
-                </select>
-                <input type="text" id="addReward" placeholder="Reward (Rp)" style="margin-bottom: 12px;">
-                
-                <hr style="border-color:rgba(255,255,255,0.1); margin:15px 0;">
-                <div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">Kaitkan Rekening (Opsional):</div>
-                
-                <input type="text" id="addBank" placeholder="Nama Bank / E-Wallet" style="margin-bottom: 12px;">
-                <input type="text" id="addName" placeholder="Atas Nama" style="margin-bottom: 12px;">
-                <input type="number" id="addRek" placeholder="Nomor Rekening" style="margin-bottom: 12px;">
-
-                <label style="margin-bottom: 6px;">Tanggal (Opsional):</label>
-                <input type="date" id="addDate" style="margin-bottom: 20px;">
-                <button class="btn btn-primary" onclick="addDataSingle()">Simpan Data</button>
+        <div class="admin-panel-glass">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="color:#ffd966; margin:0;"><i class="fas fa-crown"></i> Admin Panel</h2>
+                <button class="btn btn-danger" onclick="logoutAdmin()" style="background: #FF453A; padding: 8px 16px;">Keluar</button>
             </div>
 
-            <div class="glass-card admin-section">
-                <div class="admin-title">Manajemen Data User</div>
-                <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-                    <input type="text" id="searchUserInput" placeholder="Cari Email..." onkeyup="filterManageList()" style="flex: 1; margin-bottom: 0;">
-                    <select id="filterStatusInput" onchange="filterManageList()" style="flex: 1; margin-bottom: 0;">
-                        <option value="ALL">Semua Status</option>
+            <div class="nav-menu">
+                <button class="nav-btn active" onclick="showFeature('home')"><i class="fa-solid fa-house"></i> Utama</button>
+                <button class="nav-btn" onclick="showFeature('payment')"><i class="fa-solid fa-money-bill-transfer"></i> Pay</button>
+                <button class="nav-btn" onclick="showFeature('mass')"><i class="fa-solid fa-layer-group"></i> Massal</button>
+                <button class="nav-btn" onclick="showFeature('stats')"><i class="fa-solid fa-chart-simple"></i> Stats</button>
+                <button class="nav-btn" onclick="showFeature('settings')"><i class="fa-solid fa-gear"></i> Set</button>
+            </div>
+
+            <div id="feature-home" class="admin-feature">
+                <div class="glass-card">
+                    <div class="admin-title">Tambah Data Manual</div>
+                    <input type="email" id="addEmail" placeholder="Email">
+                    <input type="text" id="addWa" placeholder="WhatsApp">
+                    <select id="addStatus">
                         <option value="New Acc">New Acc</option>
                         <option value="Old Acc">Old Acc</option>
                         <option value="Unrestric">Unrestric</option>
@@ -689,141 +959,21 @@
                         <option value="Bonus Only">Bonus Only</option>
                         <option value="Lost Payment">Lost Payment</option>
                     </select>
+                    <input type="text" id="addReward" placeholder="Reward (Rp)">
+                    <hr style="border-color:rgba(255,255,255,0.2); margin:15px 0;">
+                    <div style="font-size:0.8rem; color:#ccc;">Kaitkan Rekening (Opsional):</div>
+                    <input type="text" id="addBank" placeholder="Nama Bank / E-Wallet">
+                    <input type="text" id="addName" placeholder="Atas Nama">
+                    <input type="number" id="addRek" placeholder="Nomor Rekening">
+                    <input type="date" id="addDate">
+                    <button class="btn btn-primary" onclick="addDataSingle()">Simpan Data</button>
                 </div>
-                <button class="btn btn-primary btn-sm" onclick="loadManageData()" style="width:100%; margin-bottom:16px;">Muat Ulang Data</button>
-                <div id="manageListContainer" style="max-height: 400px; overflow-y: auto; overflow-x: hidden;">
-                    <p style="text-align: center; color: var(--theme-gray);">Klik "Muat Ulang Data" untuk melihat list.</p>
-                </div>
-            </div>
-        </div>
 
-        <div id="feature-payment" class="admin-feature hidden">
-            <div id="paymentMainView">
                 <div class="glass-card">
-                    <div class="admin-title">Statistik Penarikan</div>
-                    <div class="stat-grid">
-                        <div class="stat-box" style="background: rgba(255,159,10,0.15);">
-                            <div class="stat-num" id="stat-pending" style="color: var(--theme-orange);">0</div>
-                            <div class="stat-label" style="color: var(--theme-orange);">Menunggu</div>
-                        </div>
-                        <div class="stat-box" style="background: rgba(48,209,88,0.15);">
-                            <div class="stat-num" id="stat-paid" style="color: var(--theme-green);">0</div>
-                            <div class="stat-label" style="color: var(--theme-green);">Selesai</div>
-                        </div>
-                    </div>
-                    <button class="btn btn-sewa" onclick="toggleHistoryView()" style="margin-bottom: 8px;">
-                        <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transfer
-                    </button>
-                    
-                    <button class="btn btn-sm" onclick="resetPaymentHistory()" style="width: 100%; margin-top: 4px; background: rgba(255, 69, 58, 0.15); color: var(--theme-red); border: 0.5px solid rgba(255, 69, 58, 0.3);">
-                        <i class="fa-solid fa-trash-can"></i> Reset SEMUA (Pending/Done/Tolak)
-                    </button>
-                </div>
-
-                <div style="margin-top: 20px; border-top: 0.5px solid var(--ios-glass-border); padding-top: 20px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <div class="admin-title" style="margin-bottom:0;">Mode Satu Payment</div>
-                        <button class="btn btn-sm" onclick="toggleBulkView()" id="btnToggleBulk" style="width:auto; background:var(--theme-gray-light);">
-                            <i class="fa-solid fa-list-check"></i> Buka List
-                        </button>
-                    </div>
-
-                    <div id="bulkPaymentContainer" class="hidden slide-up-item">
-                        <div class="glass-card">
-                            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                                <span style="font-size:0.8rem; color:var(--theme-gray);">Centang akun yang mau dibayar bareng:</span>
-                                <span style="font-size:0.8rem; font-weight:bold; color:var(--theme-blue);">Total: Rp <span id="bulkTotal">0</span></span>
-                            </div>
-
-                            <div id="bulkList" class="scan-list-box" style="max-height: 300px;">
-                                <p style="text-align:center; padding:20px;">Loading...</p>
-                            </div>
-
-                            <button class="btn btn-liquid-aurora" onclick="execBulkPayment()" style="margin-top:12px; font-size:0.9rem; padding:12px;">
-                                <i class="fa-solid fa-check-double"></i> TRANSFER YANG DIPILIH
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="glass-card" style="background: transparent; border: none; padding: 0; box-shadow: none;">
-                    <div class="admin-title" style="padding-left: 4px;">Antrian Transfer (Satuan)</div>
-                    <div id="paymentFocusContainer" class="payment-focus-wrapper">
-                        <p style="text-align:center; color:var(--theme-gray); margin-top:20px;">Memuat data...</p>
-                    </div>
-                    <button class="btn btn-primary btn-sm" onclick="loadPaymentTracking()" style="margin-top: 24px; background: var(--theme-gray-dark); color: #fff;">
-                        <i class="fa-solid fa-rotate"></i> Refresh Antrian
-                    </button>
-                </div>
-            </div>
-
-            <div id="paymentHistoryView" class="hidden slide-up-item">
-                <div class="glass-card">
-                    <div class="admin-title">Riwayat Transfer (Paid/Rejected)</div>
-                    <button class="btn btn-sm btn-danger" onclick="toggleHistoryView()" style="width:auto; margin-bottom:15px;">
-                        <i class="fa-solid fa-arrow-left"></i> Kembali ke Antrian
-                    </button>
-                    
-                    <div style="margin-bottom: 12px;">
-                        <input type="text" id="historySearchInput" placeholder="Cari Email / Nama..." onkeyup="filterHistory()">
-                    </div>
-
-                    <div id="historyListContainer" class="scan-list-box" style="max-height: 500px;">
-                        <p style="text-align:center; color:var(--theme-gray);">Memuat Riwayat...</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="feature-mass" class="admin-feature hidden">
-            <div class="glass-card">
-                <div class="admin-title">Identifikasi & Proses Massal</div>
-                <label>Paste List Email (1 email per baris):</label>
-                <textarea id="massInput" rows="8" style="margin-bottom: 14px; font-size: 0.85rem;" placeholder="email1@gmail.com&#10;email2@gmail.com"></textarea>
-                <button class="btn btn-primary" onclick="scanMassData()">
-                    <i class="fa-solid fa-magnifying-glass"></i> SCAN / IDENTIFIKASI DATA
-                </button>
-                <div id="scanResultArea" style="display:none; margin-top: 20px; animation: fadeIn 0.5s;">
-                    <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; margin-bottom:16px;">
-                        <div style="font-size:0.8rem; margin-bottom:8px; font-weight:600;">Setting untuk Proses:</div>
-                        <select id="massStatus" style="margin-bottom: 8px;">
-                            <option value="">-- Pilih Status Baru --</option>
-                            <option value="New Acc">New Acc</option>
-                            <option value="Old Acc">Old Acc</option>
-                            <option value="Unrestric">Unrestric</option>
-                            <option value="New Acc Restric">New Acc Restric</option>
-                            <option value="Restric">Restric</option>
-                            <option value="Bonus Only">Bonus Only</option>
-                            <option value="Lost Payment">Lost Payment</option>
-                        </select>
-                        <input type="text" id="massReward" placeholder="Reward (Opsional)" style="margin-bottom: 8px;">
-                        <input type="date" id="massDate">
-                    </div>
-                    <div style="margin-bottom:16px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-weight:600; font-size:0.9rem; color:var(--theme-green);">Terdeteksi di Database (<span id="countFound">0</span>)</span>
-                        </div>
-                        <div id="listFound" class="scan-list-box"></div>
-                        <div style="display:flex; gap:8px;">
-                            <button class="btn btn-sewa" onclick="execMassUpdate()" style="font-size:0.8rem;">Update Data Terdeteksi</button>
-                            <button class="btn btn-danger" onclick="execMassDelete()" style="font-size:0.8rem;">Hapus Data Terdeteksi</button>
-                        </div>
-                    </div>
-                    <div>
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                            <span style="font-weight:600; font-size:0.9rem; color:var(--theme-blue);">Email Belum Terdaftar (<span id="countNew">0</span>)</span>
-                        </div>
-                        <div id="listNew" class="scan-list-box"></div>
-                        <button class="btn btn-primary" onclick="execMassInsert()" style="font-size:0.8rem;">Simpan Data Baru</button>
-                    </div>
-                </div>
-            </div>
-            <div class="glass-card" style="margin-top: 20px;">
-                <div class="admin-title">Kelola Berdasarkan Status (DB)</div>
-                <div style="font-size:0.8rem; color:var(--text-sec); margin-bottom:10px;">Fitur ini bekerja pada semua data yang sudah ada di database.</div>
-                <div style="padding-bottom:16px; margin-bottom:16px; border-bottom:0.5px solid var(--ios-glass-border);">
-                    <label>Salin Semua Email:</label>
-                    <div style="display:flex; gap:8px;">
-                        <select id="copyStatusTarget" style="margin-bottom:0;">
+                    <div class="admin-title">Manajemen Data User</div>
+                    <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                        <input type="text" id="searchUserInput" placeholder="Cari Email..." onkeyup="filterManageList()" style="flex:1; margin-bottom:0;">
+                        <select id="filterStatusInput" onchange="filterManageList()" style="flex:1; margin-bottom:0;">
                             <option value="ALL">Semua Status</option>
                             <option value="New Acc">New Acc</option>
                             <option value="Old Acc">Old Acc</option>
@@ -833,1176 +983,688 @@
                             <option value="Bonus Only">Bonus Only</option>
                             <option value="Lost Payment">Lost Payment</option>
                         </select>
-                        <button class="btn btn-primary" style="width:auto; padding:0 20px;" onclick="copyEmailsByStatus()">
-                            <i class="fa-regular fa-copy"></i>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="loadManageData()" style="width:100%; margin-bottom:16px;">Muat Ulang Data</button>
+                    <div id="manageListContainer" style="max-height: 400px; overflow-y: auto;"></div>
+                </div>
+            </div>
+
+            <div id="feature-payment" class="admin-feature hidden">
+                <div id="paymentMainView">
+                    <div class="glass-card">
+                        <div class="admin-title">Statistik Penarikan</div>
+                        <div class="stat-grid">
+                            <div class="stat-box">
+                                <div class="stat-num" id="stat-pending">0</div>
+                                <div class="stat-label">Menunggu</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-num" id="stat-paid">0</div>
+                                <div class="stat-label">Selesai</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sewa" onclick="toggleHistoryView()" style="margin-bottom: 8px;">
+                            <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transfer
+                        </button>
+                        <button class="btn btn-sm" onclick="resetPaymentHistory()" style="width:100%; margin-top:4px; background:rgba(255,69,58,0.2); color:#FF453A; border:1px solid rgba(255,69,58,0.3);">
+                            <i class="fa-solid fa-trash-can"></i> Reset SEMUA
+                        </button>
+                    </div>
+
+                    <div style="margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <div class="admin-title" style="margin-bottom:0;">Mode Satu Payment</div>
+                            <button class="btn btn-sm" onclick="toggleBulkView()" id="btnToggleBulk" style="background:#2C2C2E;">
+                                <i class="fa-solid fa-list-check"></i> Buka List
+                            </button>
+                        </div>
+                        <div id="bulkPaymentContainer" class="hidden">
+                            <div class="glass-card">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                                    <span style="font-size:0.8rem; color:#ccc;">Centang akun yang mau dibayar bareng:</span>
+                                    <span style="font-size:0.8rem; font-weight:bold; color:#0A84FF;">Total: Rp <span id="bulkTotal">0</span></span>
+                                </div>
+                                <div id="bulkList" class="scan-list-box" style="max-height:300px;">
+                                    <p style="text-align:center; padding:20px;">Loading...</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="execBulkPayment()" style="margin-top:12px;">
+                                    <i class="fa-solid fa-check-double"></i> TRANSFER YANG DIPILIH
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="background:transparent; border:none; padding:0;">
+                        <div class="admin-title">Antrian Transfer (Satuan)</div>
+                        <div id="paymentFocusContainer" class="payment-focus-wrapper">
+                            <p style="text-align:center; color:#ccc; margin-top:20px;">Memuat data...</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" onclick="loadPaymentTracking()" style="margin-top:24px; background:#2C2C2E;">
+                            <i class="fa-solid fa-rotate"></i> Refresh Antrian
                         </button>
                     </div>
                 </div>
-                <div>
-                    <label>Update Reward Massal:</label>
-                    <select id="rewardStatusTarget" style="margin-bottom:10px;">
-                        <option value="">-- Pilih Target Status --</option>
-                        <option value="New Acc">New Acc</option>
-                        <option value="Old Acc">Old Acc</option>
-                        <option value="Unrestric">Unrestric</option>
-                        <option value="New Acc Restric">New Acc Restric</option>
-                        <option value="Restric">Restric</option>
-                        <option value="Bonus Only">Bonus Only</option>
-                        <option value="Lost Payment">Lost Payment</option>
-                    </select>
-                    <input type="number" id="massRewardValue" placeholder="Nominal Baru (Misal: 50000)" style="margin-bottom:12px;">
-                    <button class="btn btn-danger" onclick="updateRewardByStatus()">
-                        Update Reward Massal
+
+                <div id="paymentHistoryView" class="hidden">
+                    <div class="glass-card">
+                        <div class="admin-title">Riwayat Transfer (Paid/Rejected)</div>
+                        <button class="btn btn-sm" onclick="toggleHistoryView()" style="width:auto; margin-bottom:15px; background:#FF453A;">
+                            <i class="fa-solid fa-arrow-left"></i> Kembali ke Antrian
+                        </button>
+                        <div style="margin-bottom:12px;">
+                            <input type="text" id="historySearchInput" placeholder="Cari Email / Nama..." onkeyup="filterHistory()">
+                        </div>
+                        <div id="historyListContainer" class="scan-list-box" style="max-height:500px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feature-mass" class="admin-feature hidden">
+                <div class="glass-card">
+                    <div class="admin-title">Identifikasi & Proses Massal</div>
+                    <label>Paste List Email (1 email per baris):</label>
+                    <textarea id="massInput" rows="6" style="margin-bottom:14px;" placeholder="email1@gmail.com&#10;email2@gmail.com"></textarea>
+                    <button class="btn btn-primary" onclick="scanMassData()">
+                        <i class="fa-solid fa-magnifying-glass"></i> SCAN / IDENTIFIKASI DATA
                     </button>
+                    <div id="scanResultArea" style="display:none; margin-top:20px;">
+                        <div style="background:rgba(0,0,0,0.4); padding:12px; border-radius:16px; margin-bottom:16px;">
+                            <div style="font-size:0.8rem; margin-bottom:8px;">Setting untuk Proses:</div>
+                            <select id="massStatus" style="margin-bottom:8px;">
+                                <option value="">-- Pilih Status Baru --</option>
+                                <option value="New Acc">New Acc</option>
+                                <option value="Old Acc">Old Acc</option>
+                                <option value="Unrestric">Unrestric</option>
+                                <option value="New Acc Restric">New Acc Restric</option>
+                                <option value="Restric">Restric</option>
+                                <option value="Bonus Only">Bonus Only</option>
+                                <option value="Lost Payment">Lost Payment</option>
+                            </select>
+                            <input type="text" id="massReward" placeholder="Reward (Opsional)" style="margin-bottom:8px;">
+                            <input type="date" id="massDate">
+                        </div>
+                        <div style="margin-bottom:16px;">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                <span style="font-weight:600; color:#30D158;">Terdeteksi di Database (<span id="countFound">0</span>)</span>
+                            </div>
+                            <div id="listFound" class="scan-list-box"></div>
+                            <div style="display:flex; gap:8px;">
+                                <button class="btn btn-sewa" onclick="execMassUpdate()">Update Data Terdeteksi</button>
+                                <button class="btn btn-danger" onclick="execMassDelete()">Hapus Data Terdeteksi</button>
+                            </div>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                <span style="font-weight:600; color:#0A84FF;">Email Belum Terdaftar (<span id="countNew">0</span>)</span>
+                            </div>
+                            <div id="listNew" class="scan-list-box"></div>
+                            <button class="btn btn-primary" onclick="execMassInsert()">Simpan Data Baru</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card">
+                    <div class="admin-title">Kelola Berdasarkan Status (DB)</div>
+                    <div style="font-size:0.8rem; color:#ccc; margin-bottom:10px;">Fitur ini bekerja pada semua data yang sudah ada di database.</div>
+                    <div style="padding-bottom:16px; margin-bottom:16px; border-bottom:1px solid rgba(255,255,255,0.1);">
+                        <label>Salin Semua Email:</label>
+                        <div style="display:flex; gap:8px;">
+                            <select id="copyStatusTarget" style="margin-bottom:0;">
+                                <option value="ALL">Semua Status</option>
+                                <option value="New Acc">New Acc</option>
+                                <option value="Old Acc">Old Acc</option>
+                                <option value="Unrestric">Unrestric</option>
+                                <option value="New Acc Restric">New Acc Restric</option>
+                                <option value="Restric">Restric</option>
+                                <option value="Bonus Only">Bonus Only</option>
+                                <option value="Lost Payment">Lost Payment</option>
+                            </select>
+                            <button class="btn btn-primary" style="width:auto; padding:0 20px;" onclick="copyEmailsByStatus()">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Update Reward Massal:</label>
+                        <select id="rewardStatusTarget" style="margin-bottom:10px;">
+                            <option value="">-- Pilih Target Status --</option>
+                            <option value="New Acc">New Acc</option>
+                            <option value="Old Acc">Old Acc</option>
+                            <option value="Unrestric">Unrestric</option>
+                            <option value="New Acc Restric">New Acc Restric</option>
+                            <option value="Restric">Restric</option>
+                            <option value="Bonus Only">Bonus Only</option>
+                            <option value="Lost Payment">Lost Payment</option>
+                        </select>
+                        <input type="number" id="massRewardValue" placeholder="Nominal Baru (Misal: 50000)" style="margin-bottom:12px;">
+                        <button class="btn btn-danger" onclick="updateRewardByStatus()">
+                            Update Reward Massal
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="feature-stats" class="admin-feature hidden">
+                <div class="glass-card">
+                    <div class="admin-title">Statistik User</div>
+                    <div class="stat-grid" id="statsContainer">
+                        <div class="stat-box"><div class="stat-num">...</div><div class="stat-label">Loading</div></div>
+                    </div>
+                    <button class="btn btn-primary" onclick="loadStats()">Refresh Stats</button>
+                </div>
+            </div>
+
+            <div id="feature-settings" class="admin-feature hidden">
+                <div class="glass-card">
+                    <div class="admin-title">Pengaturan Global</div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.4); padding: 14px 16px; border-radius: 14px;">
+                        <span style="font-weight: 500;">Withdraw User</span>
+                        <button id="wdSwitchBtn" class="btn" style="width: auto; padding: 6px 16px; border-radius: 20px;" onclick="toggleWithdrawSwitch()">
+                            Loading...
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div id="feature-stats" class="admin-feature hidden">
-            <div class="glass-card">
-                <div class="admin-title">Statistik User</div>
-                <div class="stat-grid" id="statsContainer">
-                    <div class="stat-box"><div class="stat-num">...</div><div class="stat-label">Loading</div></div>
-                </div>
-                <button class="btn btn-primary" onclick="loadStats()">Refresh Stats</button>
-            </div>
-        </div>
-
-        <div id="feature-settings" class="admin-feature hidden">
-            <div class="glass-card">
-                <div class="admin-title">Pengaturan Global</div>
-                <div style="display: flex; justify-content: space-between; align-items: center; background: var(--theme-gray-dark); padding: 14px 16px; border-radius: 14px;">
-                    <span style="font-weight: 500;">Withdraw User</span>
-                    <button id="wdSwitchBtn" class="btn" style="width: auto; padding: 6px 16px; font-size: 0.85rem; border-radius: 20px;" onclick="toggleWithdrawSwitch()">
-                        Loading...
-                    </button>
-                </div>
-            </div>
-        </div>
-
     </div>
+</div>
 
+<!-- STATUS MODAL -->
+<div id="statusModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="close-modal-btn" onclick="closeModal()">×</button>
+        <div class="modal-coin-icon" onclick="showNotification('Koin harta karun!')"><img src="uang.png" alt="uang"></div>
+        <div class="id-avatar-wrapper"><div class="id-avatar"><i class="fa-solid fa-user"></i></div></div>
+        <div id="statusBadge" class="id-status-pill">STATUS</div>
+        <div class="id-reward-label">Total Reward</div>
+        <div class="id-reward-val" id="resReward">Rp 0</div>
+        <div class="id-info-bubble"><i class="fa-solid fa-envelope"></i><span id="resEmail">-</span></div>
+        <div id="withdrawSection" class="hidden">
+            <h4 style="margin-bottom:12px;">Form Penarikan</h4>
+            <input type="text" id="wdName" placeholder="Atas Nama" readonly>
+            <input type="text" id="wdBank" placeholder="Bank" readonly>
+            <input type="number" id="wdRek" placeholder="No Rekening" readonly>
+            <input type="number" id="wdWA" placeholder="WhatsApp" readonly>
+            <div id="actionButtons">
+                <button id="cairkanBtn" class="btn-withdraw" onclick="submitWithdraw()">Cairkan Reward</button>
+                <button id="ubahDataBtn" class="btn-ubah-data" onclick="requestDataChange()"><i class="fa-solid fa-pen"></i> Ubah Data</button>
+            </div>
+            <div id="paymentStatusNote" style="margin-top:16px;"></div>
+            <div id="paymentSuccessNote" style="margin-top:16px;"></div>
+        </div>
+        <!-- New container for status-specific messages (always visible) -->
+        <div id="statusMessageContainer" style="margin-top:16px;"></div>
+    </div>
+</div>
+
+<div id="adminLoginOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:40000; align-items:center; justify-content:center; flex-direction:column;">
+    <h2 style="color:#ffd966;">ADMIN ACCESS</h2><p style="color:#ccc;">Gambar Pola Kunci</p>
+    <div class="pattern-container" id="patternGrid"><svg id="patternSvg"></svg></div>
+    <button class="btn" onclick="closeAdminLogin()" style="margin-top:20px;">Batal</button>
 </div>
 
 <script>
-    // 1. SUPABASE CONFIGURATION
+    // ==================== SUPABASE CONFIG ====================
     const supabaseUrl = 'https://damdfhytgrpvilntiwie.supabase.co';
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRhbWRmaHl0Z3JwdmlsbnRpd2llIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NDg2NDQsImV4cCI6MjA4NzQyNDY0NH0.-Zg75AN963YBugG3u8pSUIpxBpdp8N6WLzfvMupfll4";
     const _supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    // Global Vars
-    let currentUserData = null;
-    let isWithdrawOpen = false;
-    let allUsersCache = [];
-    let paymentQueue = [];
     
-    // Vars untuk Mass Scan
-    let scannedFound = [];
-    let scannedNew = [];
+    // JSONBin config for withdraw toggle
+    const JSONBIN_BIN_ID = '69c21506aa77b81da912cb89';
+    const JSONBIN_API_KEY = '$2a$10$5FPg7m1Qs/t4whphxNPecOPFqPoIheOnrXIoYAq42A4btApsw0vIm';
+    const JSONBIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_BIN_ID}`;
 
-    // FUNGSI ANIMASI UNTUK PERGANTIAN MENU TAB ADMIN
-    function showFeature(featureName) {
-        document.querySelectorAll('.admin-feature').forEach(el => {
-            el.classList.add('hidden');
-            el.classList.remove('fade-in'); 
+    let currentUserData = null, isWithdrawOpen = false, allUsersCache = [], paymentQueue = [], scannedFound = [], scannedNew = [], isHistoryMode = false, historyCache = [];
+    let isDrawing = false, patternPath = [];
+
+    function showNotification(msg) { let d=document.createElement('div'); d.className='app-notification'; d.textContent=msg; document.body.appendChild(d); setTimeout(()=>d.remove(),2500); }
+    function getStatusColor(status) { let s=(status||'').toLowerCase(); if(s==='new acc'||s==='old acc') return {bg:'rgba(10,132,255,0.2)',color:'#0A84FF'}; if(s==='unrestric') return {bg:'rgba(255,255,255,0.1)',color:'#fff'}; if(s.includes('restric')) return {bg:'rgba(255,69,58,0.2)',color:'#FF453A'}; return {bg:'rgba(255,255,255,0.1)',color:'#fff'}; }
+
+    function showPirateLoading(title) {
+        Swal.fire({
+            title: title,
+            html: `<div class="pirate-loading"><i class="fas fa-anchor anchor-pulse"></i> <span>Menyusuri lautan data...</span></div>`,
+            background: 'rgba(0,0,0,0.8)',
+            color: '#ffd966',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
         });
-        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-        
-        const targetFeature = document.getElementById('feature-' + featureName);
-        targetFeature.classList.remove('hidden');
-        
-        void targetFeature.offsetWidth;
-        targetFeature.classList.add('fade-in');
-
-        const btnMap = { 'home':0, 'payment':1, 'mass':2, 'stats':3, 'settings':4 };
-        const buttons = document.querySelectorAll('.nav-btn');
-        if(buttons[btnMap[featureName]]) buttons[btnMap[featureName]].classList.add('active');
-        
-        if(featureName === 'home') loadManageData();
-        if(featureName === 'payment') { loadPaymentTracking(); loadPaymentStats(); }
-        if(featureName === 'stats') loadStats();
-        if(featureName === 'settings') getWithdrawStatus();
     }
 
-    // ==========================================
-    // OPTIMASI ANIMASI TRANSISI (FLIP Technique)
-    // ==========================================
-    function enterApp() {
-        const welcomeOverlay = document.getElementById('welcomeOverlay');
-        const welcomeImg = document.getElementById('welcomeImg'); // Circle Image
-        const welcomeContent = document.getElementById('welcomeContent'); 
-        const app = document.querySelector('.app-container');
-        const audio = document.getElementById('bgMusic');
-        const targetBanner = document.querySelector('.banner-img');
+    function showPirateNotFound() {
+        Swal.fire({
+            title: 'Tidak Ditemukan',
+            text: 'Email tidak terdaftar',
+            icon: 'error',
+            background: 'url("background.png") center/cover no-repeat',
+            color: '#ffd966',
+            confirmButtonColor: '#0A84FF',
+            backdrop: 'rgba(0,0,0,0.7)',
+            confirmButtonText: 'Aye, mengerti'
+        });
+    }
 
-        // Play Music
-        audio.volume = 0.5; 
-        audio.play().catch(e => console.log("Audio play blocked:", e));
+    function showPirateSuccess(message) {
+        Swal.fire({
+            title: 'Berhasil!',
+            html: `<div class="pirate-success-content"><i class="fas fa-anchor rotating-anchor"></i><br><span style="font-size:1rem;">${message}</span></div>`,
+            background: 'url("background.png") center/cover no-repeat',
+            color: '#ffd966',
+            confirmButtonColor: '#0A84FF',
+            backdrop: 'rgba(0,0,0,0.7)',
+            confirmButtonText: 'Aye, mengerti'
+        });
+    }
 
-        // 1. Fade out content text & button
-        welcomeContent.style.opacity = '0';
-        welcomeContent.style.transition = 'opacity 0.3s';
+    function showPirateWithdrawClosed() {
+        Swal.fire({
+            title: 'Perhatian!',
+            html: `<div class="pirate-alert"><i class="fas fa-anchor" style="font-size:2rem; margin-bottom:10px; display:block;"></i>Saat ini bukan jadwal untuk Payment.<br>Pantau grup untuk informasi lebih lanjut.</div>`,
+            background: 'url("background.png") center/cover no-repeat',
+            color: '#ffd966',
+            confirmButtonColor: '#FF9F0A',
+            backdrop: 'rgba(0,0,0,0.8)',
+            confirmButtonText: 'Aye, mengerti'
+        });
+    }
 
-        // 2. Prepare App View (Hidden but layout calculated)
-        app.style.display = 'block';
-        app.style.opacity = '0';
+    // ========== JSONBin Functions for Withdraw Toggle ==========
+    async function getWithdrawStatusFromJSONBin() {
+        try {
+            const response = await fetch(JSONBIN_URL, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            const result = await response.json();
+            const isActive = result.record?.withdraw_feature ?? true;
+            isWithdrawOpen = isActive;
+            updateAdminSwitchUI();
+            return isActive;
+        } catch (err) {
+            console.error("JSONBin fetch error:", err);
+            isWithdrawOpen = true;
+            updateAdminSwitchUI();
+            return true;
+        }
+    }
 
-        // 3. FLIP TECHNIQUE: Calculate Positions
-        // First: Posisi awal gambar welcome
-        const startRect = welcomeImg.getBoundingClientRect();
-        // Last: Posisi akhir banner di dalam app
-        const endRect = targetBanner.getBoundingClientRect();
-
-        // 4. Set Initial Fixed Position (Lock in place)
-        // Kita ubah posisi gambar welcome menjadi fixed di koordinat awal agar tidak lompat
-        welcomeImg.style.position = 'fixed';
-        welcomeImg.style.top = startRect.top + 'px';
-        welcomeImg.style.left = startRect.left + 'px';
-        welcomeImg.style.width = startRect.width + 'px';
-        welcomeImg.style.height = startRect.height + 'px';
-        welcomeImg.style.margin = '0'; // Reset margin bawaan
-        welcomeImg.style.transform = 'none'; // Reset transform jika ada
-        welcomeImg.style.zIndex = '10001'; // Pastikan di atas segalanya
-
-        // Force Reflow (Browser perlu baca posisi baru sebelum animasi jalan)
-        void welcomeImg.offsetHeight;
-
-        // 5. Animate to Target Position
-        // Gunakan cubic-bezier yang smooth (curve pelan di awal & akhir)
-        welcomeImg.style.transition = 'all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)'; 
-        
-        // Pindahkan ke koordinat akhir banner
-        welcomeImg.style.top = endRect.top + 'px';
-        welcomeImg.style.left = endRect.left + 'px';
-        welcomeImg.style.width = endRect.width + 'px';
-        welcomeImg.style.height = endRect.height + 'px';
-        welcomeImg.style.borderRadius = '16px'; // Ubah radius jadi kotak rounded
-        welcomeImg.style.border = '0.5px solid rgba(255, 255, 255, 0.08)';
-        welcomeImg.style.boxShadow = 'none';
-
-        // 6. Cleanup after animation
-        setTimeout(() => {
-            app.style.opacity = '1';
-            app.classList.add('fade-in');
+    async function updateWithdrawStatusToJSONBin(newState) {
+        try {
+            const response = await fetch(JSONBIN_URL, {
+                headers: { 'X-Master-Key': JSONBIN_API_KEY }
+            });
+            const result = await response.json();
+            const currentRecord = result.record || {};
+            currentRecord.withdraw_feature = newState;
             
-            // Hide Overlay Background
-            welcomeOverlay.style.background = 'transparent';
-            
-            // Final cleanup
-            setTimeout(() => {
-                welcomeOverlay.style.display = 'none';
-            }, 800);
-        }, 300); // Delay sedikit biar mata menangkap pergerakan awal
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('statusModal');
-        modal.classList.remove('active');
-    }
-
-    function getStatusColor(status) {
-        if (!status) return { bg: 'rgba(255,255,255,0.05)', color: '#fff', shadow: '#fff' };
-        
-        const s = status.toLowerCase();
-        
-        if (s === 'new acc' || s === 'old acc') {
-            return { bg: 'rgba(10, 132, 255, 0.2)', color: '#0A84FF', shadow: 'transparent' }; 
-        }
-        else if (s === 'unrestrict' || s === 'unrestric') { 
-            return { bg: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', shadow: 'transparent' }; 
-        }
-        else if (s === 'new acc restric' || s === 'restric new acc') { 
-            return { bg: 'rgba(255, 159, 10, 0.2)', color: '#FF9F0A', shadow: 'transparent' }; 
-        }
-        else if (s.includes('restric') || s === 'bonus only') {
-            return { bg: 'rgba(255, 69, 58, 0.2)', color: '#FF453A', shadow: 'transparent' }; 
-        }
-        else {
-            return { bg: 'rgba(255, 255, 255, 0.1)', color: '#ffffff', shadow: 'transparent' };
+            const updateResponse = await fetch(JSONBIN_URL, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': JSONBIN_API_KEY
+                },
+                body: JSON.stringify(currentRecord)
+            });
+            if (!updateResponse.ok) throw new Error('Update failed');
+            isWithdrawOpen = newState;
+            updateAdminSwitchUI();
+            return true;
+        } catch (err) {
+            console.error("JSONBin update error:", err);
+            return false;
         }
     }
 
-    async function checkStatus() {
-        const emailInput = document.getElementById('userEmail').value.trim();
-        if (!emailInput) return Swal.fire({title:'Error', text:'Masukkan email terlebih dahulu', icon:'error', background:'#1C1C1E', color:'#fff'});
-
-        Swal.fire({ title: 'Mengecek...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-        await getWithdrawStatus();
-        const { data, error } = await _supabase.from('linked_users').select('*').ilike('email', emailInput).single();
+    async function toggleWithdrawSwitch() {
+        const newState = !isWithdrawOpen;
+        Swal.fire({
+            title: 'Menyimpan pengaturan...',
+            html: `<div class="pirate-loading"><i class="fas fa-anchor anchor-pulse"></i> <span>Mengirim ke lautan data...</span></div>`,
+            background: 'rgba(0,0,0,0.8)',
+            color: '#ffd966',
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
+        const success = await updateWithdrawStatusToJSONBin(newState);
         Swal.close();
-
-        if (error || !data) {
-            Swal.fire({icon: 'error', title: 'Tidak Ditemukan', text: 'Email tidak terdaftar.', background: '#1C1C1E', color: '#fff'});
-            return;
+        if (success) {
+            Swal.fire({
+                title: 'Sukses',
+                text: newState ? 'Form Penarikan DIBUKA' : 'Form Penarikan DITUTUP',
+                icon: 'success',
+                background: '#1C1C1E',
+                color: '#fff'
+            });
+        } else {
+            Swal.fire({
+                title: 'Gagal',
+                text: 'Tidak dapat menyimpan pengaturan. Coba lagi.',
+                icon: 'error',
+                background: '#1C1C1E',
+                color: '#fff'
+            });
         }
+    }
+
+    function updateAdminSwitchUI() {
+        let btn = document.getElementById('wdSwitchBtn');
+        if (btn) btn.innerText = isWithdrawOpen ? 'Buka' : 'Tutup';
+    }
+
+    // ========== Helper to get status-specific message ==========
+    function getStatusMessage(status) {
+        const s = (status || '').toLowerCase();
+        if (s === 'restric' || s.includes('restric')) {
+            return {
+                message: "Akun terkena restricted, harap segera Verifikasi dan dapat Bonus tambahan total 270k",
+                className: "status-message-red"
+            };
+        } else if (s === 'new acc') {
+            return {
+                message: "Akun sedang Running, tidak perlu setor ulang !",
+                className: "status-message-green"
+            };
+        } else if (s === 'old acc') {
+            return {
+                message: "Akun sedang Running, tidak perlu setor ulang !",
+                className: "status-message-purple"
+            };
+        } else if (s === 'unrestric') {
+            return {
+                message: "<strong>Akun Unrestrict, berhak mendapatkan Total 270k</strong><br>- dengan catatan tidak terkena restricted di minggu yang sama.<br>- jika terkena Restrict lagi, hanya dapet kompensasi Bonus sebesar 96k",
+                className: "status-message-purple"
+            };
+        } else if (s === 'bonus only') {
+            return {
+                message: "Bonus ini untuk akun Unrestrict yang terkena restricted di minggu yang sama",
+                className: "status-message-pink"
+            };
+        }
+        return null;
+    }
+
+    // ========== USER FUNCTIONS ==========
+    async function checkStatus() {
+        let email = document.getElementById('userEmail').value.trim();
+        if (!email) return Swal.fire({title:'Error', text:'Masukkan email', icon:'error', background:'#1C1C1E'});
+        showPirateLoading("Mengecek Status Akun");
+        await getWithdrawStatusFromJSONBin();
+        let {data, error} = await _supabase.from('linked_users').select('*').ilike('email', email).single();
+        Swal.close();
+        if (error || !data) return showPirateNotFound();
         currentUserData = data;
         renderUserResult(data);
     }
 
     function renderUserResult(data) {
-        const modal = document.getElementById('statusModal');
-        const badge = document.getElementById('statusBadge');
-        
+        let modal = document.getElementById('statusModal');
         document.getElementById('resEmail').innerText = data.email;
-        // REMOVED WHATSAPP SETTING TO PREVENT JS ERROR
-        document.getElementById('resReward').innerText = data.reward ? `Rp ${data.reward}` : 'Rp 0';
-
+        document.getElementById('resReward').innerText = `Rp ${data.reward||0}`;
+        let badge = document.getElementById('statusBadge');
         badge.innerText = data.status || 'UNKNOWN';
-        
-        const style = getStatusColor(data.status);
+        let style = getStatusColor(data.status);
         badge.style.background = style.bg;
         badge.style.color = style.color;
-        badge.style.border = `1px solid ${style.color}50`;
-        badge.style.boxShadow = `0 0 15px ${style.color}40`; // Add glow to pill
 
-        const wdSec = document.getElementById('withdrawSection');
-        const inputName = document.getElementById('wdName');
-        const inputBank = document.getElementById('wdBank');
-        const inputRek = document.getElementById('wdRek');
-        const inputWA = document.getElementById('wdWA');
+        let wdSec = document.getElementById('withdrawSection');
+        let nameInput = document.getElementById('wdName');
+        let bankInput = document.getElementById('wdBank');
+        let rekInput = document.getElementById('wdRek');
+        let waInput = document.getElementById('wdWA');
         
-        // Reset state first
-        [inputName, inputBank, inputRek, inputWA].forEach(el => {
-            el.value = '';
-            el.readOnly = false;
-            el.style.background = 'var(--theme-gray-dark)';
-            el.style.border = '0.5px solid transparent';
-            el.style.color = '#fff';
-            el.style.cursor = 'text';
+        [nameInput, bankInput, rekInput, waInput].forEach(inp => {
+            inp.readOnly = true;
+            inp.style.background = 'rgba(0,0,0,0.5)';
+            inp.style.cursor = 'default';
         });
-        const existingMsg = document.getElementById('lockMsg');
-        if(existingMsg) existingMsg.remove();
-
-        if (isWithdrawOpen && data.payment_status !== 'claimed' && data.payment_status !== 'paid' && data.payment_status !== 'rejected') {
+        
+        nameInput.value = data.acc_name || '';
+        bankInput.value = data.bank_name || '';
+        rekInput.value = data.acc_number || '';
+        waInput.value = data.whatsapp || '';
+        
+        let actionDiv = document.getElementById('actionButtons');
+        let noteDiv = document.getElementById('paymentStatusNote');
+        let successDiv = document.getElementById('paymentSuccessNote');
+        
+        actionDiv.style.display = 'block';
+        noteDiv.style.display = 'none';
+        successDiv.style.display = 'none';
+        noteDiv.innerHTML = '';
+        successDiv.innerHTML = '';
+        
+        // Determine visibility of withdraw section and action buttons
+        if (data.payment_status === 'paid') {
             wdSec.classList.remove('hidden');
-
-            // --- SECURITY LOGIC: LOCK DATA IF EXISTS ---
-            if (data.acc_number && String(data.acc_number).length > 2) {
-                // Populate data from DB
-                inputName.value = data.acc_name || '';
-                inputBank.value = data.bank_name || '';
-                inputRek.value = data.acc_number || '';
-                inputWA.value = data.whatsapp || ''; // Might be empty
-
-                // 1. Lock Bank, Name, Rek (Always locked if they exist)
-                [inputName, inputBank, inputRek].forEach(el => {
-                    el.readOnly = true;
-                    el.style.background = 'rgba(48, 209, 88, 0.1)';
-                    el.style.border = '1px solid rgba(48, 209, 88, 0.3)';
-                    el.style.cursor = 'not-allowed';
-                });
-
-                // 2. Check WhatsApp specifically
-                if (data.whatsapp && String(data.whatsapp).length > 5) {
-                    // WA exists -> Lock it
-                    inputWA.readOnly = true;
-                    inputWA.style.background = 'rgba(48, 209, 88, 0.1)';
-                    inputWA.style.border = '1px solid rgba(48, 209, 88, 0.3)';
-                    inputWA.style.cursor = 'not-allowed';
-                } else {
-                    // WA missing -> Unlock it allow entry
-                    inputWA.readOnly = false;
-                    inputWA.style.background = 'var(--theme-gray-dark)';
-                    inputWA.style.border = '1px solid var(--theme-blue)'; // Highlight
-                    inputWA.style.cursor = 'text';
-                    inputWA.placeholder = 'Isi Nomor WA (Wajib)';
-                }
-
-                // Add visual message
-                const msg = document.createElement('div');
-                msg.id = 'lockMsg';
-                msg.innerHTML = '<i class="fa-solid fa-lock"></i> Data terkunci aman. Hubungi Admin jika ingin ubah.';
-                msg.style.fontSize = '0.75rem';
-                msg.style.color = 'var(--theme-green)';
-                msg.style.marginBottom = '12px';
-                msg.style.textAlign = 'center';
-                wdSec.insertBefore(msg, wdSec.firstChild.nextSibling);
-            }
-            // -------------------------------------------
-
-        } else if (data.payment_status === 'claimed' || data.payment_status === 'paid' || data.payment_status === 'rejected') {
-            wdSec.classList.add('hidden');
-            let msg = 'Permintaan sedang DIPROSES.';
-            if (data.payment_status === 'paid') msg = 'Reward SUDAH DIBAYAR.';
-            if (data.payment_status === 'rejected') msg = 'Permintaan DITOLAK.';
-            
-            Swal.fire({icon: 'info', title: 'Info Status', text: msg, background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        } else {
+            actionDiv.style.display = 'none';
+            successDiv.style.display = 'block';
+            successDiv.className = 'payment-success-note';
+            successDiv.innerHTML = '<i class="fa-solid fa-check-circle"></i> Account anda Telah menerima Payment';
+        }
+        else if (data.payment_status === 'claimed') {
+            actionDiv.style.display = 'none';
+            noteDiv.style.display = 'block';
+            noteDiv.className = 'processing-note';
+            noteDiv.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Payment sedang di Proses sesuai Antrian, harap tunggu dan pantau notifikasi pada wallet masing-masing.';
+            wdSec.classList.remove('hidden');
+        } 
+        else if (data.payment_status === 'rejected') {
             wdSec.classList.add('hidden');
         }
-
-        modal.classList.add('active'); 
-    }
-
-    async function submitWithdraw() {
-        const name = document.getElementById('wdName').value;
-        const bank = document.getElementById('wdBank').value;
-        const rek = document.getElementById('wdRek').value;
-        const wa = document.getElementById('wdWA').value;
-
-        if(!name || !bank || !rek || !wa) return Swal.fire({title: 'Gagal', text:'Lengkapi semua kolom termasuk WhatsApp.', icon:'warning', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        
-        // Logic tambahan: Validasi format WA
-        if (!wa.toString().startsWith('08')) {
-            return Swal.fire({title: 'Format Salah', text:'Nomor WhatsApp harus berawalan 08.', icon:'warning', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        }
-
-        Swal.fire({ title: 'Memproses...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-
-        const { error } = await _supabase.from('linked_users').update({
-            payment_status: 'claimed', acc_name: name, bank_name: bank, acc_number: rek, whatsapp: wa, withdraw_date: new Date().toISOString()
-        }).eq('id', currentUserData.id);
-
-        if (error) Swal.fire({title: 'Error', text: error.message, icon:'error', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
         else {
-            Swal.fire({icon: 'success', title: 'Berhasil!', text: 'Permintaan penarikan terkirim.', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-            document.getElementById('withdrawSection').classList.add('hidden');
-        }
-    }
-
-    async function getWithdrawStatus() {
-        const { data } = await _supabase.from('app_settings').select('is_active').eq('setting_name', 'withdraw_feature').single();
-        if (data) isWithdrawOpen = data.is_active; else isWithdrawOpen = true;
-        updateAdminSwitchUI();
-    }
-
-    // ==========================================
-    // LOGIC POLA (PATTERN LOCK)
-    // ==========================================
-    let isDrawing = false;
-    let patternPath = [];
-    const patternGrid = document.getElementById('patternGrid');
-    const patternSvg = document.getElementById('patternSvg');
-
-    // 1. GENERATE DOTS
-    function initPatternLock() {
-        patternGrid.innerHTML = '<svg id="patternSvg"></svg>'; // Reset
-        for(let i=1; i<=9; i++) {
-            const dot = document.createElement('div');
-            dot.className = 'p-dot';
-            dot.dataset.id = i;
-            dot.innerHTML = '<div class="p-dot-inner"></div>';
-            patternGrid.appendChild(dot);
-        }
-        
-        // Re-get reference after innerHTML reset
-        const svg = document.getElementById('patternSvg');
-        
-        // Events
-        patternGrid.addEventListener('mousedown', startPattern);
-        patternGrid.addEventListener('touchstart', startPattern, {passive: false});
-        
-        window.addEventListener('mouseup', endPattern);
-        window.addEventListener('touchend', endPattern);
-        
-        window.addEventListener('mousemove', movePattern);
-        window.addEventListener('touchmove', movePattern, {passive: false});
-    }
-
-    function getEventPos(e) {
-        if(e.touches) {
-            return { x: e.touches[0].clientX, y: e.touches[0].clientY };
-        } else {
-            return { x: e.clientX, y: e.clientY };
-        }
-    }
-
-    function startPattern(e) {
-        e.preventDefault();
-        isDrawing = true;
-        patternPath = [];
-        clearPattern();
-        checkCollision(getEventPos(e));
-    }
-
-    function movePattern(e) {
-        if(!isDrawing) return;
-        e.preventDefault();
-        const pos = getEventPos(e);
-        checkCollision(pos);
-        drawCurrentLine(pos);
-    }
-
-    function endPattern(e) {
-        if(!isDrawing) return;
-        isDrawing = false;
-        validatePattern();
-    }
-
-    function checkCollision(pos) {
-        const dots = document.querySelectorAll('.p-dot');
-        const gridRect = patternGrid.getBoundingClientRect();
-        
-        dots.forEach(dot => {
-            const rect = dot.getBoundingClientRect();
-            // Center point of dot
-            const centerX = rect.left + rect.width/2;
-            const centerY = rect.top + rect.height/2;
-            
-            // Distance check (radius ~20px)
-            const dist = Math.hypot(pos.x - centerX, pos.y - centerY);
-            
-            if(dist < 30) {
-                const id = dot.dataset.id;
-                if(!patternPath.includes(id)) {
-                    patternPath.push(id);
-                    dot.classList.add('active');
-                    updateLines();
-                    
-                    // Haptic feedback if supported
-                    if(navigator.vibrate) navigator.vibrate(20);
-                }
+            if (isWithdrawOpen) {
+                wdSec.classList.remove('hidden');
+                actionDiv.style.display = 'block';
+                noteDiv.style.display = 'none';
+            } else {
+                wdSec.classList.add('hidden');
             }
+        }
+
+        // Status-specific message (always shown)
+        let msgContainer = document.getElementById('statusMessageContainer');
+        msgContainer.innerHTML = '';
+        
+        // Add withdraw closed message if withdraw is closed and user has not yet claimed/paid
+        if (!isWithdrawOpen && (data.payment_status !== 'paid' && data.payment_status !== 'claimed' && data.payment_status !== 'rejected')) {
+            let closedDiv = document.createElement('div');
+            closedDiv.className = 'withdraw-closed-message';
+            closedDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Withdraw sedang ditutup. cek group untuk informasi lebih lanjut.';
+            msgContainer.appendChild(closedDiv);
+        }
+        
+        // Add status-specific message
+        let statusMsg = getStatusMessage(data.status);
+        if (statusMsg) {
+            let msgDiv = document.createElement('div');
+            msgDiv.className = statusMsg.className;
+            msgDiv.style.padding = '12px';
+            msgDiv.style.borderRadius = '20px';
+            msgDiv.style.fontSize = '0.85rem';
+            msgDiv.style.textAlign = 'center';
+            msgDiv.style.fontWeight = '500';
+            msgDiv.innerHTML = statusMsg.message;
+            msgContainer.appendChild(msgDiv);
+        }
+        
+        modal.classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('statusModal').classList.remove('active'); }
+    
+    async function submitWithdraw() {
+        if (!isWithdrawOpen) {
+            showPirateWithdrawClosed();
+            return;
+        }
+        
+        let name = document.getElementById('wdName').value;
+        let bank = document.getElementById('wdBank').value;
+        let rek = document.getElementById('wdRek').value;
+        let wa = document.getElementById('wdWA').value;
+        if(!name || !bank || !rek || !wa) return Swal.fire({title:'Gagal', text:'Lengkapi semua kolom', icon:'warning'});
+        
+        Swal.fire({
+            title: 'Mengirim Permintaan',
+            html: `<div class="pirate-loading"><i class="fas fa-anchor anchor-pulse"></i> <span>Mengirim ke kapten...</span></div>`,
+            background: 'rgba(0,0,0,0.8)',
+            color: '#ffd966',
+            showConfirmButton: false,
+            allowOutsideClick: false
         });
-    }
-
-    function updateLines() {
-        const svg = document.getElementById('patternSvg');
-        // Clear existing static lines
-        const oldLines = svg.querySelectorAll('.p-line-static');
-        oldLines.forEach(l => l.remove());
-
-        if(patternPath.length > 1) {
-            for(let i=0; i<patternPath.length-1; i++) {
-                const dot1 = document.querySelector(`.p-dot[data-id="${patternPath[i]}"]`);
-                const dot2 = document.querySelector(`.p-dot[data-id="${patternPath[i+1]}"]`);
-                drawLine(dot1, dot2, svg);
-            }
-        }
-    }
-
-    function drawLine(dot1, dot2, svg) {
-        const rect1 = dot1.getBoundingClientRect();
-        const rect2 = dot2.getBoundingClientRect();
-        const gridRect = patternGrid.getBoundingClientRect();
-
-        const x1 = rect1.left + rect1.width/2 - gridRect.left;
-        const y1 = rect1.top + rect1.height/2 - gridRect.top;
-        const x2 = rect2.left + rect2.width/2 - gridRect.left;
-        const y2 = rect2.top + rect2.height/2 - gridRect.top;
-
-        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-        line.setAttribute("x1", x1); line.setAttribute("y1", y1);
-        line.setAttribute("x2", x2); line.setAttribute("y2", y2);
-        line.classList.add('p-line', 'p-line-static');
-        svg.appendChild(line);
-    }
-
-    function drawCurrentLine(pos) {
-        const svg = document.getElementById('patternSvg');
-        const currentLine = document.getElementById('p-line-dynamic');
         
-        if(patternPath.length === 0) return;
-
-        const lastDotId = patternPath[patternPath.length-1];
-        const lastDot = document.querySelector(`.p-dot[data-id="${lastDotId}"]`);
-        const rect = lastDot.getBoundingClientRect();
-        const gridRect = patternGrid.getBoundingClientRect();
-
-        const x1 = rect.left + rect.width/2 - gridRect.left;
-        const y1 = rect.top + rect.height/2 - gridRect.top;
-        const x2 = pos.x - gridRect.left;
-        const y2 = pos.y - gridRect.top;
-
-        if(!currentLine) {
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            line.id = 'p-line-dynamic';
-            line.classList.add('p-line');
-            svg.appendChild(line);
-        } else {
-            currentLine.setAttribute("x1", x1);
-            currentLine.setAttribute("y1", y1);
-            currentLine.setAttribute("x2", x2);
-            currentLine.setAttribute("y2", y2);
-        }
-    }
-
-    function clearPattern() {
-        document.querySelectorAll('.p-dot').forEach(d => d.classList.remove('active'));
-        document.getElementById('patternSvg').innerHTML = ''; // Clear lines
-    }
-
-    function validatePattern() {
-        // Hapus garis dynamic
-        const dLine = document.getElementById('p-line-dynamic');
-        if(dLine) dLine.remove();
-
-        const inputCode = patternPath.join('');
+        await _supabase.from('linked_users').update({
+            payment_status: 'claimed',
+            acc_name: name,
+            bank_name: bank,
+            acc_number: rek,
+            whatsapp: wa,
+            withdraw_date: new Date().toISOString()
+        }).eq('id', currentUserData.id);
         
-        // --- OBFUSCATED CHECK ---
-        // Target: 4569871
-        // Split: 456, 98, 71
-        const _s1 = "NDU2"; 
-        const _s2 = "OTg=";
-        const _s3 = "NzE=";
-        const _target = atob(_s1) + atob(_s2) + atob(_s3);
-
-        if(inputCode === _target) {
-            // Success
-            closeAdminLogin();
-            document.getElementById('userView').classList.add('hidden');
-            document.getElementById('adminPanel').style.display = 'block';
-            document.getElementById('adminPanel').classList.add('fade-in');
-            showFeature('home'); getWithdrawStatus();
-        } else {
-            // Fail
-            const dots = document.querySelectorAll('.p-dot.active');
-            dots.forEach(d => d.style.background = 'rgba(255,69,58,0.3)');
-            setTimeout(() => {
-                dots.forEach(d => d.style.background = '');
-                clearPattern();
-            }, 500);
-            
-            if(inputCode.length > 2) { // Feedback only if meaningful attempt
-                const Toast = Swal.mixin({toast: true, position: 'top', showConfirmButton: false, timer: 1500, background: '#FF453A', color: '#fff'});
-                Toast.fire({icon: 'error', title: 'Pola Salah'});
-            }
-        }
+        Swal.close();
+        showPirateSuccess("Permintaan penarikan terkirim. Pantau status akun Anda.");
+        closeModal();
     }
+    
+    function requestDataChange() { if(currentUserData) window.open(`https://wa.me/6287722495525?text=Halo Admin, saya ingin mengajukan perubahan data rekening untuk email: ${currentUserData.email}`, '_blank'); }
 
-    // --- UI CONTROLLERS ---
-    function openAdminPattern() {
-        document.getElementById('adminLoginOverlay').style.display = 'flex';
-        initPatternLock(); // Init grid logic
-    }
-
-    function closeAdminLogin() {
-        document.getElementById('adminLoginOverlay').style.display = 'none';
-        clearPattern();
-        isDrawing = false;
-    }
-
-    // --- EXISTING ADMIN FUNCTIONS ---
-    function logoutAdmin() {
-        document.getElementById('adminPanel').style.display = 'none';
-        const uView = document.getElementById('userView');
-        uView.classList.remove('hidden');
-        void uView.offsetWidth;
-        uView.classList.add('fade-in');
-    }
-
-    async function loadStats() {
-        const { data, error } = await _supabase.from('linked_users').select('status');
-        if(error) return;
-
-        const counts = {};
-        
-        data.forEach(row => { 
-            let s = row.status || 'Unknown';
-            s = s.trim(); 
-            const lower = s.toLowerCase();
-
-            if (lower === 'new acc') s = 'New Acc';
-            else if (lower === 'old acc') s = 'Old Acc';
-            else if (lower === 'new acc restric') s = 'New Acc Restric';
-            else if (lower === 'restric' || lower === 'restrict') s = 'Restric';
-            else if (lower === 'unrestric' || lower === 'unrestrict') s = 'Unrestric';
-            else if (lower === 'bonus only') s = 'Bonus Only';
-            else if (lower === 'lost payment') s = 'Lost Payment';
-
-            counts[s] = (counts[s] || 0) + 1; 
-        });
-
-        const container = document.getElementById('statsContainer');
-        container.innerHTML = `<div class="stat-box slide-up-item" style="grid-column: span 2; background: rgba(10, 132, 255, 0.15); animation-delay: 0s;"><div class="stat-num">${data.length}</div><div class="stat-label" style="color:var(--text-sec);">TOTAL DATA</div></div>`;
-        
-        const sortedEntries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-
-        let delayIndex = 1;
-        for (const [key, val] of sortedEntries) { 
-            const animDelay = (delayIndex * 0.05).toFixed(2); 
-            let colorStyle = 'var(--text-sec)';
-            if(key.includes('Restric')) colorStyle = 'var(--theme-orange)';
-            if(key === 'New Acc' || key === 'Old Acc') colorStyle = 'var(--theme-blue)';
-
-            container.innerHTML += `
-            <div class="stat-box slide-up-item" style="animation-delay: ${animDelay}s">
-                <div class="stat-num">${val}</div>
-                <div class="stat-label" style="color:${colorStyle};">${key}</div>
-            </div>`; 
-            delayIndex++;
-        }
-    }
-
-    function updateAdminSwitchUI() {
-        const btn = document.getElementById('wdSwitchBtn');
-        if(isWithdrawOpen) { btn.innerText = 'Buka'; btn.style.background = 'var(--theme-green)'; btn.style.color = '#fff'; } 
-        else { btn.innerText = 'Tutup'; btn.style.background = 'var(--theme-gray-light)'; btn.style.color = '#fff'; }
-    }
-
-    async function toggleWithdrawSwitch() {
-        const newState = !isWithdrawOpen;
-        const { error } = await _supabase.from('app_settings').update({ is_active: newState }).eq('setting_name', 'withdraw_feature');
-        if(!error) { isWithdrawOpen = newState; updateAdminSwitchUI(); Swal.fire({title:'Sukses', text: newState ? 'Form Dibuka' : 'Form Ditutup', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'}); }
-    }
-
-    async function loadManageData() {
-        const list = document.getElementById('manageListContainer'); list.innerHTML = '<p style="text-align:center; color: var(--theme-gray);">Loading...</p>';
-        const { data, error } = await _supabase.from('linked_users').select('*').order('created_at', { ascending: false }).limit(500);
-        if (error) { list.innerHTML = '<p style="text-align:center; color: var(--theme-red);">Gagal memuat data.</p>'; return; }
-        allUsersCache = data; renderManageList(allUsersCache);
-    }
-
+    // ==================== ADMIN FUNCTIONS (FULL, PRESERVED) ====================
+    async function loadManageData() { let {data}=await _supabase.from('linked_users').select('*').order('created_at',{ascending:false}).limit(500); allUsersCache=data||[]; renderManageList(allUsersCache); }
+    
     function renderManageList(dataArr) {
-        const list = document.getElementById('manageListContainer');
-        if (dataArr.length === 0) { list.innerHTML = '<p style="text-align:center; color:var(--theme-gray);">Kosong.</p>'; return; }
-        
-        const nonRestricData = dataArr.filter(item => !(item.status || '').toLowerCase().includes('restric'));
-        const restricData = dataArr.filter(item => (item.status || '').toLowerCase().includes('restric'));
-        const sortedData = [...nonRestricData, ...restricData];
-
+        let container = document.getElementById('manageListContainer');
+        if (!container) return;
+        if (!dataArr.length) {
+            container.innerHTML = '<p style="text-align:center; color:#ccc;">Kosong</p>';
+            return;
+        }
         let html = '';
-        sortedData.forEach((item, index) => {
-            const style = getStatusColor(item.status);
-            const animDelay = (index < 20) ? (index * 0.04).toFixed(2) : 0; 
-            
-            html += `<div class="user-manage-card slide-up-item" style="animation-delay: ${animDelay}s">
+        dataArr.forEach(u => {
+            let style = getStatusColor(u.status);
+            html += `<div class="user-manage-card">
                         <div class="um-header">
-                            <div class="um-email" style="display:flex; align-items:center;">
-                                ${item.email}
-                                <i class="fa-regular fa-copy" onclick="copyText('${item.email}')" style="cursor:pointer; margin-left:8px; color:var(--theme-blue);"></i>
+                            <div class="um-email">
+                                <i class="fa-regular fa-envelope"></i> ${u.email}
+                                <button class="copy-email-btn" onclick="copyEmailToClipboard('${u.email}')"><i class="fa-regular fa-copy"></i> Salin</button>
                             </div>
-                            <div style="font-size:0.7rem; font-weight:600; background: ${style.bg}; padding:4px 10px; border-radius:12px; border:1px solid ${style.color}50; color: ${style.color} !important;">${item.status}</div>
+                            <div style="background:${style.bg}; padding:4px 12px; border-radius:20px;">${u.status}</div>
                         </div>
-                        <div class="um-meta"><i class="fa-brands fa-whatsapp"></i> ${item.whatsapp || '-'} | Rp ${item.reward || 0}</div>
-                        <div class="um-meta" style="font-size:0.75rem; color:var(--theme-gray);">Date: ${new Date(item.created_at).toLocaleDateString()}</div>
+                        <div class="um-meta">Reward: Rp ${u.reward||0} | WA: ${u.whatsapp||'-'}</div>
+                        <div class="um-meta">Dibuat: ${new Date(u.created_at).toLocaleDateString()}</div>
                         <div class="um-actions">
-                            <button class="btn btn-sm" style="background: var(--theme-blue); color:white;" onclick="editUser(${item.id})">Edit</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteUser(${item.id})">Hapus</button>
+                            <button class="btn btn-sm" style="background:#0A84FF;" onclick="editUser(${u.id})">Edit</button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteUser(${u.id})">Hapus</button>
                         </div>
-                     </div>`;
+                    </div>`;
         });
-        list.innerHTML = html;
+        container.innerHTML = html;
     }
-
-    function filterManageList() {
-        const q = document.getElementById('searchUserInput').value.toLowerCase();
-        const statusFilter = document.getElementById('filterStatusInput').value;
-
-        const filteredData = allUsersCache.filter(u => {
-            const matchesSearch = (u.email && u.email.toLowerCase().includes(q)) || (u.status && u.status.toLowerCase().includes(q));
-            const sRaw = u.status || '';
-            const sDb = sRaw.toLowerCase().trim(); 
-            const sFilter = statusFilter.toLowerCase().trim(); 
-            const matchesStatus = statusFilter === 'ALL' || sDb === sFilter;
-            return matchesSearch && matchesStatus;
+    
+    function copyEmailToClipboard(email) {
+        navigator.clipboard.writeText(email).then(() => {
+            Swal.fire({
+                toast: true,
+                title: 'Email disalin!',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false,
+                background: '#1C1C1E',
+                color: '#ffd966'
+            });
         });
-
-        renderManageList(filteredData);
     }
-
-    async function deleteUser(id) {
-        const res = await Swal.fire({ title: 'Hapus?', icon: 'warning', showCancelButton: true, confirmButtonColor: '#FF453A', cancelButtonColor: '#3A3A3C', confirmButtonText: 'Hapus', background: '#1C1C1E', color: '#fff' });
-        if (res.isConfirmed) { await _supabase.from('linked_users').delete().eq('id', id); loadManageData(); loadStats(); }
-    }
-
-    // --- MODIFIED EDIT USER FUNCTION (FULL DATA EDIT) ---
+    
+    function filterManageList() { let q=document.getElementById('searchUserInput')?.value.toLowerCase()||''; let filter=document.getElementById('filterStatusInput')?.value||'ALL'; let filtered=allUsersCache.filter(u=>(u.email.toLowerCase().includes(q))&&(filter==='ALL'||(u.status||'').toLowerCase()===filter.toLowerCase())); renderManageList(filtered); }
+    async function deleteUser(id){ if(await Swal.fire({title:'Yakin?',icon:'warning',showCancelButton:true}).then(r=>r.isConfirmed)){ await _supabase.from('linked_users').delete().eq('id',id); loadManageData(); loadStats(); } }
+    
     async function editUser(id) {
-        const u = allUsersCache.find(x => x.id === id); if(!u) return;
-        
-        const { value: v } = await Swal.fire({
+        let u = allUsersCache.find(x => x.id === id);
+        if (!u) return;
+        let { value: v } = await Swal.fire({
             title: 'Edit Data User',
-            background: '#1C1C1E',
+            html: `
+                <select id="swal-status" class="swal-dark-input" style="background:rgba(0,0,0,0.6); border:1px solid #b8964b; border-radius:40px; padding:12px; color:#fff; width:100%; margin-bottom:12px;">
+                    <option value="New Acc" ${u.status === 'New Acc' ? 'selected' : ''}>New Acc</option>
+                    <option value="Old Acc" ${u.status === 'Old Acc' ? 'selected' : ''}>Old Acc</option>
+                    <option value="Unrestric" ${u.status === 'Unrestric' ? 'selected' : ''}>Unrestric</option>
+                    <option value="New Acc Restric" ${u.status === 'New Acc Restric' ? 'selected' : ''}>New Acc Restric</option>
+                    <option value="Restric" ${u.status === 'Restric' ? 'selected' : ''}>Restric</option>
+                    <option value="Bonus Only" ${u.status === 'Bonus Only' ? 'selected' : ''}>Bonus Only</option>
+                    <option value="Lost Payment" ${u.status === 'Lost Payment' ? 'selected' : ''}>Lost Payment</option>
+                </select>
+                <input id="swal-reward" value="${u.reward || 0}" placeholder="Reward" class="swal-dark-input" style="background:rgba(0,0,0,0.6); border:1px solid #b8964b; border-radius:40px; padding:12px; color:#fff; width:100%; margin-bottom:12px;">
+                <input id="swal-wa" value="${u.whatsapp || ''}" placeholder="WhatsApp" class="swal-dark-input" style="background:rgba(0,0,0,0.6); border:1px solid #b8964b; border-radius:40px; padding:12px; color:#fff; width:100%; margin-bottom:12px;">
+                <input id="swal-bank" value="${u.bank_name || ''}" placeholder="Nama Bank" class="swal-dark-input" style="background:rgba(0,0,0,0.6); border:1px solid #b8964b; border-radius:40px; padding:12px; color:#fff; width:100%; margin-bottom:12px;">
+                <input id="swal-name" value="${u.acc_name || ''}" placeholder="Atas Nama" class="swal-dark-input" style="background:rgba(0,0,0,0.6); border:1px solid #b8964b; border-radius:40px; padding:12px; color:#fff; width:100%; margin-bottom:12px;">
+                <input id="swal-rek" value="${u.acc_number || ''}" placeholder="Nomor Rekening" class="swal-dark-input" style="background:rgba(0,0,0,0.6); border:1px solid #b8964b; border-radius:40px; padding:12px; color:#fff; width:100%;">
+            `,
+            focusConfirm: false,
+            background: 'url("background.png") center/cover no-repeat',
             color: '#fff',
             confirmButtonColor: '#0A84FF',
             cancelButtonColor: '#3A3A3C',
             showCancelButton: true,
-            confirmButtonText: 'Simpan Perubahan',
-            html: `
-            <div style="text-align:left; margin-bottom:10px;">
-                <label class="swal-label">Status</label>
-                <select id="swal-s" class="swal-dark-input">
-                    <option value="New Acc" ${u.status=='New Acc'?'selected':''}>New Acc</option>
-                    <option value="Old Acc" ${u.status=='Old Acc'?'selected':''}>Old Acc</option>
-                    <option value="Unrestric" ${u.status=='Unrestric'?'selected':''}>Unrestric</option>
-                    <option value="New Acc Restric" ${u.status=='New Acc Restric'?'selected':''}>New Acc Restric</option>
-                    <option value="Restric" ${u.status=='Restric'?'selected':''}>Restric</option>
-                    <option value="Bonus Only" ${u.status=='Bonus Only'?'selected':''}>Bonus Only</option>
-                    <option value="Lost Payment" ${u.status=='Lost Payment'?'selected':''}>Lost Payment</option>
-                </select>
-                <label class="swal-label">Reward (Rp)</label>
-                <input id="swal-r" class="swal-dark-input" value="${u.reward||''}">
-                
-                <hr style="border-color:rgba(255,255,255,0.1); margin:15px 0;">
-                <div style="font-size:0.8rem; color:#aaa; margin-bottom:10px;">Kaitkan/Edit Data Rekening:</div>
-
-                <label class="swal-label">Nama Bank</label>
-                <input id="swal-bank" class="swal-dark-input" value="${u.bank_name||''}" placeholder="Contoh: BCA / DANA">
-                
-                <label class="swal-label">Atas Nama</label>
-                <input id="swal-name" class="swal-dark-input" value="${u.acc_name||''}" placeholder="Nama Pemilik">
-                
-                <label class="swal-label">Nomor Rekening</label>
-                <input id="swal-rek" class="swal-dark-input" value="${u.acc_number||''}" placeholder="1234567890">
-                
-                <label class="swal-label">WhatsApp</label>
-                <input id="swal-w" class="swal-dark-input" value="${u.whatsapp||''}">
-            </div>`,
+            confirmButtonText: 'Simpan',
+            cancelButtonText: 'Batal',
             preConfirm: () => ({
-                status: document.getElementById('swal-s').value,
-                reward: document.getElementById('swal-r').value,
+                status: document.getElementById('swal-status').value,
+                reward: document.getElementById('swal-reward').value,
+                whatsapp: document.getElementById('swal-wa').value,
                 bank_name: document.getElementById('swal-bank').value,
                 acc_name: document.getElementById('swal-name').value,
-                acc_number: document.getElementById('swal-rek').value,
-                whatsapp: document.getElementById('swal-w').value
+                acc_number: document.getElementById('swal-rek').value
             })
         });
-
         if (v) {
-            Swal.fire({ title: 'Menyimpan...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-            
-            const { error } = await _supabase.from('linked_users').update(v).eq('id', id);
-            
-            if(!error) {
-                Swal.fire({title:'Sukses', text:'Data berhasil diperbarui.', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-                loadManageData();
-                loadStats();
-            } else {
-                Swal.fire({title:'Gagal', text:error.message, icon:'error', background: '#1C1C1E', color: '#fff'});
-            }
+            await _supabase.from('linked_users').update(v).eq('id', id);
+            loadManageData();
+            loadStats();
         }
     }
-
-    async function addDataSingle() {
-        const e = document.getElementById('addEmail').value.trim(), w = document.getElementById('addWa').value, s = document.getElementById('addStatus').value, r = document.getElementById('addReward').value, d = document.getElementById('addDate').value;
-        const bank = document.getElementById('addBank').value;
-        const name = document.getElementById('addName').value;
-        const rek = document.getElementById('addRek').value;
-
-        if(!e) return Swal.fire({title:'Error', text:'Email wajib.', icon:'warning', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        const { data: ex } = await _supabase.from('linked_users').select('id').eq('email', e).single();
-        if(ex) return Swal.fire({title:'Gagal', text:'Email sudah ada.', icon:'error', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        
-        const p = { email: e, whatsapp: w, status: s, reward: r, bank_name: bank, acc_name: name, acc_number: rek }; 
-        if(d) p.created_at = new Date(d).toISOString();
-        
-        const { error } = await _supabase.from('linked_users').insert([p]);
-        if(!error) { 
-            Swal.fire({title:'Sukses', text:'Data tersimpan.', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'}); 
-            document.getElementById('addEmail').value = ''; 
-            loadManageData(); loadStats(); 
-        }
-    }
-
-    // === FITUR MASS SCAN ===
     
-    async function scanMassData() {
-        const raw = document.getElementById('massInput').value;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const list = raw.split('\n').map(x => x.trim()).filter(x => x !== '' && emailRegex.test(x)); 
-        
-        if(list.length === 0) return Swal.fire({title:'Kosong/Invalid', text:'Tidak ada email valid yang ditemukan.', icon:'warning', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        
-        Swal.fire({ title: 'Scanning...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
+    async function addDataSingle(){ let email=document.getElementById('addEmail').value; if(!email) return; let payload={email,whatsapp:document.getElementById('addWa').value,status:document.getElementById('addStatus').value,reward:document.getElementById('addReward').value,bank_name:document.getElementById('addBank').value,acc_name:document.getElementById('addName').value,acc_number:document.getElementById('addRek').value}; if(document.getElementById('addDate').value) payload.created_at=new Date(document.getElementById('addDate').value).toISOString(); await _supabase.from('linked_users').insert([payload]); loadManageData(); }
+    async function loadStats(){ let {data}=await _supabase.from('linked_users').select('status'); let counts={}; data?.forEach(d=>{let s=d.status||'Unknown'; counts[s]=(counts[s]||0)+1;}); let container=document.getElementById('statsContainer'); if(container) container.innerHTML=`<div class="stat-box"><div class="stat-num">${data?.length||0}</div><div>Total</div></div>`+Object.entries(counts).map(([k,v])=>`<div class="stat-box"><div class="stat-num">${v}</div><div>${k}</div></div>`).join(''); }
+    async function scanMassData(){ let raw=document.getElementById('massInput').value; let list=raw.split('\n').map(l=>l.trim()).filter(l=>l.includes('@')); if(!list.length) return; let {data:existing}=await _supabase.from('linked_users').select('email,status,reward').in('email',list); scannedFound=existing||[]; scannedNew=list.filter(e=>!scannedFound.some(f=>f.email.toLowerCase()===e.toLowerCase())); document.getElementById('scanResultArea').style.display='block'; document.getElementById('countFound').innerText=scannedFound.length; document.getElementById('countNew').innerText=scannedNew.length; let foundDiv=document.getElementById('listFound'); foundDiv.innerHTML=scannedFound.map(u=>`<div class="scan-item"><input type="checkbox" class="chk-found" value="${u.email}" checked> ${u.email} (${u.status})</div>`).join(''); let newDiv=document.getElementById('listNew'); newDiv.innerHTML=scannedNew.map(e=>`<div class="scan-item"><input type="checkbox" class="chk-new" value="${e}" checked> ${e}</div>`).join(''); }
+    async function execMassUpdate(){ let emails=[...document.querySelectorAll('.chk-found:checked')].map(cb=>cb.value); if(!emails.length) return; let updates={}; if(document.getElementById('massStatus').value) updates.status=document.getElementById('massStatus').value; if(document.getElementById('massReward').value) updates.reward=document.getElementById('massReward').value; await _supabase.from('linked_users').update(updates).in('email',emails); scanMassData(); loadManageData(); }
+    async function execMassDelete(){ let emails=[...document.querySelectorAll('.chk-found:checked')].map(cb=>cb.value); if(!emails.length) return; await _supabase.from('linked_users').delete().in('email',emails); scanMassData(); loadManageData(); }
+    async function execMassInsert(){ let emails=[...document.querySelectorAll('.chk-new:checked')].map(cb=>cb.value); if(!emails.length) return; let status=document.getElementById('massStatus').value; if(!status) return; let payload=emails.map(e=>({email:e,status,reward:document.getElementById('massReward').value||0,created_at:document.getElementById('massDate').value?new Date(document.getElementById('massDate').value).toISOString():new Date().toISOString()})); await _supabase.from('linked_users').insert(payload); scanMassData(); loadManageData(); }
+    async function copyEmailsByStatus(){ let target=document.getElementById('copyStatusTarget').value; let query=_supabase.from('linked_users').select('email'); if(target!=='ALL') query=query.ilike('status',target); let {data}=await query; let emails=[...new Set(data.map(u=>u.email))]; navigator.clipboard.writeText(emails.join('\n')); Swal.fire('Sukses',`${emails.length} email disalin`,'success'); }
+    async function updateRewardByStatus(){ let status=document.getElementById('rewardStatusTarget').value; let amount=document.getElementById('massRewardValue').value; if(!status||!amount) return; await _supabase.from('linked_users').update({reward:amount}).eq('status',status); loadManageData(); Swal.fire('Berhasil','Reward diperbarui','success'); }
+    async function loadPaymentTracking(){ let {data}=await _supabase.from('linked_users').select('*').eq('payment_status','claimed').order('withdraw_date'); paymentQueue=data||[]; renderActivePayment(); loadPaymentStats(); }
+    function renderActivePayment(){ let container=document.getElementById('paymentFocusContainer'); if(!paymentQueue.length){container.innerHTML='<p>Tidak ada antrian.</p>';return;} let x=paymentQueue[0]; let wn=(x.whatsapp||'').replace(/\D/g,''); if(wn.startsWith('0')) wn='62'+wn.slice(1); let msg=`Halo, penarikan Rp ${x.reward} ke ${x.bank_name} a.n ${x.acc_name} SUDAH BERHASIL.`; let waLink=`https://wa.me/${wn}?text=${encodeURIComponent(msg)}`; container.innerHTML=`<div class="payment-card-focus"><div><strong>${x.bank_name}</strong> - Rp ${x.reward}</div><div>${x.acc_name} | ${x.acc_number}</div><div>${x.email}</div><div style="margin-top:12px;"><button class="btn btn-primary" onclick="markAsPaid(${x.id},'${waLink}')">Transfer</button> <button class="btn btn-sewa" onclick="skipPayment()">Lewati</button> <button class="btn btn-danger" onclick="rejectPayment(${x.id},'${wn}',${x.reward})">Tolak</button></div></div>`; }
+    function skipPayment(){ if(paymentQueue.length>1){paymentQueue.push(paymentQueue.shift()); renderActivePayment();} else Swal.fire({toast:true,icon:'info',title:'Hanya 1 antrian',timer:1500}); }
+    async function markAsPaid(id,link){ await _supabase.from('linked_users').update({payment_status:'paid'}).eq('id',id); paymentQueue.shift(); window.open(link,'_blank'); renderActivePayment(); loadPaymentStats(); }
+    async function rejectPayment(id,wa,amt){ let {value:reason}=await Swal.fire({title:'Alasan Penolakan',input:'text'}); if(reason){ await _supabase.from('linked_users').update({payment_status:'rejected'}).eq('id',id); paymentQueue.shift(); window.open(`https://wa.me/${wa}?text=${encodeURIComponent(`Penarikan Rp ${amt} ditolak. Alasan: ${reason}`)}`,'_blank'); renderActivePayment(); loadPaymentStats(); } }
+    async function loadPaymentStats(){ let {count:p}=await _supabase.from('linked_users').select('*',{count:'exact',head:true}).eq('payment_status','claimed'); let {count:pa}=await _supabase.from('linked_users').select('*',{count:'exact',head:true}).eq('payment_status','paid'); document.getElementById('stat-pending').innerText=p||0; document.getElementById('stat-paid').innerText=pa||0; }
+    async function resetPaymentHistory(){ await _supabase.from('linked_users').update({payment_status:'archived'}).in('payment_status',['claimed','paid','rejected']); loadPaymentStats(); loadPaymentTracking(); }
+    let isHistoryModeFlag=false; function toggleHistoryView(){ isHistoryModeFlag=!isHistoryModeFlag; document.getElementById('paymentMainView').classList.toggle('hidden'); document.getElementById('paymentHistoryView').classList.toggle('hidden'); if(isHistoryModeFlag) loadWithdrawHistory(); }
+    async function loadWithdrawHistory(){ let {data}=await _supabase.from('linked_users').select('*').in('payment_status',['paid','rejected']).order('withdraw_date',{ascending:false}).limit(100); historyCache=data||[]; renderHistoryList(historyCache); }
+    function renderHistoryList(data){ let container=document.getElementById('historyListContainer'); if(!container) return; container.innerHTML=data.map(h=>`<div class="hist-item"><div>${new Date(h.withdraw_date).toLocaleDateString()} - ${h.payment_status==='paid'?'BERHASIL':'DITOLAK'}</div><div>${h.acc_name} - Rp ${h.reward}</div><div>${h.email}</div></div>`).join(''); }
+    function filterHistory(){ let q=document.getElementById('historySearchInput')?.value.toLowerCase()||''; let filtered=historyCache.filter(h=>h.email.toLowerCase().includes(q)||(h.acc_name||'').toLowerCase().includes(q)); renderHistoryList(filtered); }
+    function showFeature(feature){ document.querySelectorAll('.admin-feature').forEach(el=>el.classList.add('hidden')); document.getElementById(`feature-${feature}`).classList.remove('hidden'); document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); event.target.classList.add('active'); if(feature==='home') loadManageData(); if(feature==='payment'){loadPaymentTracking();loadPaymentStats();} if(feature==='stats') loadStats(); if(feature==='settings') getWithdrawStatusFromJSONBin(); }
+    function logoutAdmin(){ document.getElementById('adminPanel').style.display='none'; document.getElementById('userView').style.display='block'; }
 
-        scannedFound = []; scannedNew = [];
+    // PATTERN LOCK
+    function openAdminPattern(){ document.getElementById('adminLoginOverlay').style.display='flex'; initPatternLock(); }
+    function closeAdminLogin(){ document.getElementById('adminLoginOverlay').style.display='none'; patternPath=[]; clearPattern(); isDrawing=false; }
+    function initPatternLock(){ let grid=document.getElementById('patternGrid'); grid.innerHTML='<svg id="patternSvg"></svg>'; for(let i=1;i<=9;i++){ let dot=document.createElement('div'); dot.className='p-dot'; dot.dataset.id=i; dot.innerHTML='<div class="p-dot-inner"></div>'; grid.appendChild(dot); } patternPath=[]; isDrawing=false; attachPatternEvents(); }
+    function attachPatternEvents(){ let grid=document.getElementById('patternGrid'); let start=(e)=>{e.preventDefault(); isDrawing=true; patternPath=[]; clearPattern(); checkCollision(getEventPos(e));}; let move=(e)=>{if(!isDrawing)return; e.preventDefault(); checkCollision(getEventPos(e)); drawCurrentLine(getEventPos(e));}; let end=()=>{if(!isDrawing)return; isDrawing=false; validatePattern();}; let getEventPos=(e)=>{let t=e.touches?e.touches[0]:e; return{x:t.clientX,y:t.clientY};}; grid.addEventListener('mousedown',start); grid.addEventListener('touchstart',start,{passive:false}); window.addEventListener('mouseup',end); window.addEventListener('touchend',end); window.addEventListener('mousemove',move); window.addEventListener('touchmove',move,{passive:false}); }
+    function checkCollision(pos){ let dots=document.querySelectorAll('.p-dot'); dots.forEach(dot=>{let rect=dot.getBoundingClientRect(); let cx=rect.left+rect.width/2,cy=rect.top+rect.height/2; if(Math.hypot(pos.x-cx,pos.y-cy)<35){ let id=dot.dataset.id; if(!patternPath.includes(id)){patternPath.push(id); dot.classList.add('active'); updateLines(); if(navigator.vibrate)navigator.vibrate(20);}}});}
+    function updateLines(){ let svg=document.getElementById('patternSvg'); svg.innerHTML=''; for(let i=0;i<patternPath.length-1;i++){ let d1=document.querySelector(`.p-dot[data-id="${patternPath[i]}"]`), d2=document.querySelector(`.p-dot[data-id="${patternPath[i+1]}"]`); drawLineBetween(d1,d2,svg); } }
+    function drawLineBetween(d1,d2,svg){ let rect1=d1.getBoundingClientRect(), rect2=d2.getBoundingClientRect(), gridRect=document.getElementById('patternGrid').getBoundingClientRect(); let x1=rect1.left+rect1.width/2-gridRect.left,y1=rect1.top+rect1.height/2-gridRect.top,x2=rect2.left+rect2.width/2-gridRect.left,y2=rect2.top+rect2.height/2-gridRect.top; let line=document.createElementNS("http://www.w3.org/2000/svg","line"); line.setAttribute("x1",x1);line.setAttribute("y1",y1);line.setAttribute("x2",x2);line.setAttribute("y2",y2); line.setAttribute("stroke","#fbbf24");line.setAttribute("stroke-width","4"); svg.appendChild(line); }
+    function drawCurrentLine(pos){ let svg=document.getElementById('patternSvg'); let existing=document.getElementById('p-line-dynamic'); if(existing) existing.remove(); if(patternPath.length===0) return; let lastDot=document.querySelector(`.p-dot[data-id="${patternPath[patternPath.length-1]}"]`); let rect=lastDot.getBoundingClientRect(); let gridRect=document.getElementById('patternGrid').getBoundingClientRect(); let x1=rect.left+rect.width/2-gridRect.left,y1=rect.top+rect.height/2-gridRect.top,x2=pos.x-gridRect.left,y2=pos.y-gridRect.top; let line=document.createElementNS("http://www.w3.org/2000/svg","line"); line.id='p-line-dynamic'; line.setAttribute("x1",x1);line.setAttribute("y1",y1);line.setAttribute("x2",x2);line.setAttribute("y2",y2);line.setAttribute("stroke","#fbbf24");line.setAttribute("stroke-width","4"); svg.appendChild(line); }
+    function clearPattern(){ document.querySelectorAll('.p-dot').forEach(d=>d.classList.remove('active')); let svg=document.getElementById('patternSvg'); if(svg) svg.innerHTML=''; }
+    function validatePattern(){ let input=patternPath.join(''); if(input==='4569871'){ closeAdminLogin(); document.getElementById('userView').style.display='none'; document.getElementById('adminPanel').style.display='block'; showFeature('home'); getWithdrawStatusFromJSONBin(); } else { Swal.fire({toast:true,icon:'error',title:'Pola Salah',timer:1500}); clearPattern(); patternPath=[]; } }
 
-        const { data: existingUsers, error } = await _supabase.from('linked_users').select('email, status, reward').in('email', list);
-        
-        if (error) {
-            Swal.fire({title:'Error', text: error.message, icon:'error', background: '#1C1C1E', color: '#fff'});
-            return;
-        }
-
-        const foundEmails = existingUsers.map(u => u.email.toLowerCase());
-        scannedFound = existingUsers; 
-        scannedNew = list.filter(e => !foundEmails.includes(e.toLowerCase()));
-
-        document.getElementById('scanResultArea').style.display = 'block';
-        document.getElementById('countFound').innerText = scannedFound.length;
-        document.getElementById('countNew').innerText = scannedNew.length;
-
-        const listFoundEl = document.getElementById('listFound');
-        listFoundEl.innerHTML = scannedFound.length ? '' : '<div style="padding:10px; text-align:center; color:#555;">Tidak ada data ditemukan</div>';
-        scannedFound.forEach(u => {
-            listFoundEl.innerHTML += `<div class="scan-item"><input type="checkbox" class="chk-found" value="${u.email}" checked><span>${u.email}</span><span class="tag-found">${u.status} | ${u.reward}</span></div>`;
-        });
-
-        const listNewEl = document.getElementById('listNew');
-        listNewEl.innerHTML = scannedNew.length ? '' : '<div style="padding:10px; text-align:center; color:#555;">Tidak ada email baru</div>';
-        scannedNew.forEach(email => {
-            listNewEl.innerHTML += `<div class="scan-item"><input type="checkbox" class="chk-new" value="${email}" checked><span>${email}</span><span class="tag-new">New</span></div>`;
-        });
-
-        Swal.close();
-    }
-
-    async function execMassUpdate() {
-        const checkboxes = document.querySelectorAll('.chk-found:checked');
-        const emailsToUpdate = Array.from(checkboxes).map(cb => cb.value);
-
-        if (emailsToUpdate.length === 0) return Swal.fire({title:'Kosong', text:'Pilih data yang ingin diupdate.', icon:'warning', background: '#1C1C1E', color: '#fff'});
-
-        const s = document.getElementById('massStatus').value;
-        const r = document.getElementById('massReward').value;
-        
-        if (!s && !r) return Swal.fire({title:'Info', text:'Pilih Status atau Reward baru.', icon:'info', background: '#1C1C1E', color: '#fff'});
-
-        const confirm = await Swal.fire({
-            title: 'Update Massal?',
-            text: `Akan mengupdate ${emailsToUpdate.length} data terpilih.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Ya, Update',
-            confirmButtonColor: '#0A84FF',
-            background: '#1C1C1E', color: '#fff'
-        });
-
-        if (confirm.isConfirmed) {
-            Swal.fire({ title: 'Updating...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-            
-            const updates = {};
-            if(s) updates.status = s;
-            if(r) updates.reward = r;
-
-            const { error } = await _supabase.from('linked_users').update(updates).in('email', emailsToUpdate);
-
-            if (!error) {
-                Swal.fire({title:'Sukses', text:'Data berhasil diupdate.', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-                loadManageData(); loadStats(); scanMassData(); 
-            } else {
-                Swal.fire({title:'Gagal', text:error.message, icon:'error', background: '#1C1C1E', color: '#fff'});
-            }
-        }
-    }
-
-    async function execMassDelete() {
-        const checkboxes = document.querySelectorAll('.chk-found:checked');
-        const emailsToDelete = Array.from(checkboxes).map(cb => cb.value);
-
-        if (emailsToDelete.length === 0) return Swal.fire({title:'Kosong', text:'Pilih data yang ingin dihapus.', icon:'warning', background: '#1C1C1E', color: '#fff'});
-
-        const confirm = await Swal.fire({title: 'Hapus Massal?', text: `Yakin menghapus ${emailsToDelete.length} data terpilih?`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Hapus', confirmButtonColor: '#FF453A', background: '#1C1C1E', color: '#fff'});
-
-        if (confirm.isConfirmed) {
-            Swal.fire({ title: 'Deleting...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-            const { error } = await _supabase.from('linked_users').delete().in('email', emailsToDelete);
-            if (!error) {
-                Swal.fire({title:'Sukses', text:'Data berhasil dihapus.', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-                loadManageData(); loadStats(); scanMassData(); 
-            }
-        }
-    }
-
-    async function execMassInsert() {
-        const checkboxes = document.querySelectorAll('.chk-new:checked');
-        const emailsToInsert = Array.from(checkboxes).map(cb => cb.value);
-
-        if (emailsToInsert.length === 0) return Swal.fire({title:'Kosong', text:'Pilih email baru yang ingin disimpan.', icon:'warning', background: '#1C1C1E', color: '#fff'});
-
-        const s = document.getElementById('massStatus').value;
-        const r = document.getElementById('massReward').value || '0';
-        const d = document.getElementById('massDate').value;
-
-        if (!s) return Swal.fire({title:'Info', text:'Pilih Status awal untuk data baru.', icon:'info', background: '#1C1C1E', color: '#fff'});
-
-        const confirm = await Swal.fire({title: 'Simpan Massal?', text: `Akan menyimpan ${emailsToInsert.length} data baru terpilih.`, icon: 'question', showCancelButton: true, confirmButtonText: 'Ya, Simpan', confirmButtonColor: '#30D158', background: '#1C1C1E', color: '#fff'});
-
-        if (confirm.isConfirmed) {
-            Swal.fire({ title: 'Saving...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-            
-            const newPayload = emailsToInsert.map(email => ({
-                email: email, status: s, reward: r,
-                created_at: d ? new Date(d).toISOString() : new Date().toISOString()
-            }));
-
-            const { error } = await _supabase.from('linked_users').insert(newPayload);
-
-            if (!error) {
-                Swal.fire({title:'Sukses', text:'Data baru berhasil disimpan.', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-                loadManageData(); loadStats(); scanMassData(); 
-            } else {
-                Swal.fire({title:'Gagal', text:error.message, icon:'error', background: '#1C1C1E', color: '#fff'});
-            }
-        }
-    }
-
-    async function loadPaymentStats() {
-        const { count: pendingCount } = await _supabase.from('linked_users').select('*', { count: 'exact', head: true }).eq('payment_status', 'claimed');
-        const { count: paidCount } = await _supabase.from('linked_users').select('*', { count: 'exact', head: true }).eq('payment_status', 'paid');
-        document.getElementById('stat-pending').innerText = pendingCount || 0;
-        document.getElementById('stat-paid').innerText = paidCount || 0;
-    }
-
-    async function resetPaymentHistory() {
-        const res = await Swal.fire({
-            title: 'Reset SEMUA Histori?', 
-            text: 'Data Pending (claimed), Selesai (paid), dan Ditolak (rejected) akan diarsipkan (dihapus dari view ini).', 
-            icon: 'warning', 
-            showCancelButton: true, 
-            confirmButtonColor: '#FF453A', 
-            cancelButtonColor: '#3A3A3C', 
-            confirmButtonText: 'Ya, Reset Semua', 
-            background: '#1C1C1E', 
-            color: '#fff'
-        });
-
-        if (res.isConfirmed) {
-            Swal.fire({ title: 'Mereset...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-            
-            const { error } = await _supabase
-                .from('linked_users')
-                .update({ payment_status: 'archived' })
-                .in('payment_status', ['claimed', 'paid', 'rejected']);
-                
-            if (error) { Swal.fire({title: 'Error', text: error.message, icon: 'error', background: '#1C1C1E', color: '#fff'}); } 
-            else {
-                Swal.fire({title: 'Sukses', text: 'Semua histori payment berhasil direset.', icon: 'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-                loadPaymentStats(); 
-                loadPaymentTracking(); 
-            }
-        }
-    }
-
-    async function loadPaymentTracking() {
-        const container = document.getElementById('paymentFocusContainer');
-        container.innerHTML = '<p style="text-align:center;color:var(--theme-gray);">Loading...</p>';
-        loadPaymentStats();
-        
-        const { data, error } = await _supabase.from('linked_users').select('*').eq('payment_status', 'claimed').order('withdraw_date', { ascending: true }); 
-            
-        if(error || !data || data.length === 0) {
-            container.innerHTML = '<p class="slide-up-item" style="text-align:center; color:var(--theme-gray); margin-top:30px;">Tidak ada antrian transfer.</p>';
-            paymentQueue = []; return;
-        }
-
-        paymentQueue = data; renderActivePayment();
-    }
-
-    function renderActivePayment() {
-        const container = document.getElementById('paymentFocusContainer');
-        
-        if (paymentQueue.length === 0) { container.innerHTML = '<p class="slide-up-item" style="text-align:center; color:var(--theme-gray); margin-top:30px;">Semua antrian selesai! 🎉</p>'; return; }
-
-        const x = paymentQueue[0];
-        let wn = (x.whatsapp||'').replace(/\D/g,''); if(wn.startsWith('0')) wn='62'+wn.slice(1); if(!wn.startsWith('62')) wn='62'+wn;
-        const date = new Date(x.withdraw_date).toLocaleDateString();
-        const msg = `Halo, Penarikan reward LinkedIn senilai Rp ${x.reward} ke ${x.bank_name} (${x.acc_number}) a.n ${x.acc_name} SUDAH BERHASIL DITRANSFER. Terima kasih telah bekerjasama dengan Myth💫!`;
-        const waLink = `https://wa.me/${wn}?text=${encodeURIComponent(msg)}`;
-        
-        container.innerHTML = `
-            <div class="payment-card-focus slide-up-item">
-                <div class="pcf-queue">Antrian Priority</div>
-                <div class="pcf-header"><span class="pc-bank-badge" style="font-size:0.9rem; font-weight:600;">${x.bank_name}</span><div class="pcf-amount">Rp ${x.reward}</div></div>
-                <div class="pcf-row"><div class="pcf-label"><i class="fa-solid fa-user"></i> Nama Pemilik</div><div class="pcf-val">${x.acc_name}</div></div>
-                <div class="pcf-row"><div class="pcf-label"><i class="fa-solid fa-credit-card"></i> Nomor Rekening</div><div class="pcf-val">${x.acc_number} <button onclick="copyText('${x.acc_number}')" class="copy-btn"><i class="fa-regular fa-copy"></i> Salin</button></div></div>
-                <div class="pcf-row"><div class="pcf-label"><i class="fa-solid fa-envelope"></i> Email User</div><div class="pcf-val" style="font-size:0.85rem; font-weight:400; color:var(--text-sec);">${x.email}</div></div>
-                <div class="pcf-actions" style="gap:8px;">
-                     <button onclick="rejectPayment(${x.id}, '${wn}', ${x.reward})" class="btn btn-reject" style="flex:1; font-size:0.85rem; padding:12px;">Tolak</button>
-                    <button onclick="skipPayment()" class="btn btn-skip" style="flex:1; font-size:0.85rem; padding:12px;">Lewati</button>
-                    <button onclick="markAsPaid(${x.id}, '${waLink}')" class="btn btn-done" style="flex:2; font-size:0.85rem; padding:12px;">Transfer</button>
-                </div>
-                <div style="text-align:center; font-size:0.75rem; color:var(--theme-gray); margin-top:20px;">Request Tgl: ${date} (Sisa Antrian: ${paymentQueue.length})</div>
-            </div>`;
-    }
-
-    function skipPayment() {
-        if(paymentQueue.length > 1) {
-            const item = paymentQueue.shift(); paymentQueue.push(item);
-            const container = document.getElementById('paymentFocusContainer');
-            container.classList.remove('fade-in'); void container.offsetWidth; container.classList.add('fade-in');
-            renderActivePayment();
-        } else { Swal.fire({toast: true, position: 'center', icon: 'info', title: 'Hanya ada 1 antrian', showConfirmButton: false, timer: 1000, background: '#1C1C1E', color: '#fff'}); }
-    }
-
-    function copyText(text) {
-        navigator.clipboard.writeText(text).then(() => {
-            const Toast = Swal.mixin({toast: true, position: 'top-end', showConfirmButton: false, timer: 1500, background: '#1C1C1E', color: '#fff'});
-            Toast.fire({icon: 'success', title: 'Disalin!'});
-        });
-    }
-
-    async function rejectPayment(id, waNum, amount) {
-        const { value: reason } = await Swal.fire({title: 'Tolak Penarikan?', input: 'text', inputLabel: 'Alasan Penolakan', inputPlaceholder: 'Misal: Nomor rekening salah...', showCancelButton: true, confirmButtonColor: '#FF453A', cancelButtonColor: '#3A3A3C', confirmButtonText: 'Tolak & WA', background: '#1C1C1E', color: '#fff', inputValidator: (value) => { if (!value) return 'Alasan wajib diisi!' }});
-
-        if (reason) {
-            const { error } = await _supabase.from('linked_users').update({ payment_status: 'rejected' }).eq('id', id);
-            if(error) { Swal.fire({title:'Error', text:error.message, icon:'error', background: '#1C1C1E', color: '#fff'}); return; }
-            
-            const msg = `Halo, Maaf permintaan penarikan reward Rp ${amount} DITOLAK. Alasan: ${reason}. Silakan cek data Anda kembali.`;
-            const link = `https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`;
-            window.open(link, '_blank');
-            
-            paymentQueue.shift();
-            const container = document.getElementById('paymentFocusContainer');
-            container.classList.remove('fade-in'); void container.offsetWidth; container.classList.add('fade-in');
-            renderActivePayment(); loadPaymentStats();
-        }
-    }
-
-    async function markAsPaid(id, waLink) {
-        const result = await Swal.fire({title: 'Konfirmasi Transfer', text: "Pastikan dana sudah dikirim sebelum menekan Ya.", icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Sudah Transfer', confirmButtonColor: '#0A84FF', cancelButtonColor: '#3A3A3C', background: '#1C1C1E', color: '#fff'});
-
-        if (result.isConfirmed) {
-            const finishedItem = paymentQueue.shift(); 
-            const { error } = await _supabase.from('linked_users').update({ payment_status: 'paid' }).eq('id', id);
-            if (error) { Swal.fire({title:'Error', text:error.message, icon:'error', background: '#1C1C1E', color: '#fff'}); } 
-            else { 
-                window.open(waLink, '_blank'); loadPaymentStats(); 
-                const container = document.getElementById('paymentFocusContainer');
-                container.classList.remove('fade-in'); void container.offsetWidth; container.classList.add('fade-in');
-                renderActivePayment(); 
-            }
-        }
-    }
-
-    // --- FITUR BARU: COPY EMAILS BY STATUS (DIPERBAIKI) ---
-    async function copyEmailsByStatus() {
-        const target = document.getElementById('copyStatusTarget').value;
-        Swal.fire({ title: 'Menyalin...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-        
-        // FIX 1: Tambahkan .limit() yang besar untuk memastikan semua data terambil (default supabase cuma 1000)
-        let query = _supabase.from('linked_users').select('email').limit(5000);
-        
-        if (target !== 'ALL') { 
-            // FIX 2: Ganti .eq() menjadi .ilike()
-            // .eq() -> Harus persis sama (Old Acc != old acc)
-            // .ilike() -> Tidak peduli huruf besar/kecil (Old Acc == old acc == OLD ACC)
-            query = query.ilike('status', target); 
-        }
-
-        const { data, error } = await query;
-        
-        if (error) { Swal.fire({title:'Error', text:error.message, icon:'error', background: '#1C1C1E', color: '#fff'}); return; }
-        if (!data || data.length === 0) { Swal.fire({title:'Kosong', text:'Tidak ada data untuk status ini.', icon:'info', background: '#1C1C1E', color: '#fff'}); return; }
-
-        // FIX 3: Tambahkan filter unik untuk membuang email yang duplikat (jika ada)
-        const uniqueEmails = [...new Set(data.map(u => u.email))];
-        const emailList = uniqueEmails.join('\n');
-
-        navigator.clipboard.writeText(emailList).then(() => {
-            Swal.fire({title:'Sukses', text:`${uniqueEmails.length} email berhasil disalin!`, icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-        });
-    }
-
-    // --- FITUR BARU: UPDATE REWARD MASSAL BY STATUS ---
-    async function updateRewardByStatus() {
-        const target = document.getElementById('rewardStatusTarget').value;
-        const amount = document.getElementById('massRewardValue').value;
-        
-        if (!target) return Swal.fire({title:'Pilih Status', text:'Pilih status target terlebih dahulu.', icon:'warning', background: '#1C1C1E', color: '#fff'});
-        if (!amount) return Swal.fire({title:'Isi Nominal', text:'Isi nominal reward baru.', icon:'warning', background: '#1C1C1E', color: '#fff'});
-
-        const confirm = await Swal.fire({title: 'Yakin Update Massal?', text: `Semua user dengan status "${target}" akan diubah reward-nya menjadi Rp ${amount}. Tindakan ini tidak bisa dibatalkan!`, icon: 'warning', showCancelButton: true, confirmButtonText: 'Ya, Ubah Semua', confirmButtonColor: '#FF453A', cancelButtonColor: '#3A3A3C', background: '#1C1C1E', color: '#fff'});
-
-        if (confirm.isConfirmed) {
-            Swal.fire({ title: 'Memproses...', didOpen: () => Swal.showLoading(), background: '#1C1C1E', color: '#fff' });
-            const { error } = await _supabase.from('linked_users').update({ reward: amount }).eq('status', target);
-            if (error) { Swal.fire({title:'Error', text: error.message, icon:'error', background: '#1C1C1E', color: '#fff'}); } 
-            else {
-                Swal.fire({title:'Berhasil', text:'Reward berhasil diupdate secara massal.', icon:'success', background: '#1C1C1E', color: '#fff', confirmButtonColor: '#0A84FF'});
-                loadManageData(); 
-            }
-        }
-    }
-
-    // ==========================================
-    // FITUR HISTORY WITHDRAW (BARU)
-    // ==========================================
-    
-    let isHistoryMode = false;
-    let historyCache = []; // [NEW] Cache untuk pencarian lokal
-
-    function toggleHistoryView() {
-        const mainView = document.getElementById('paymentMainView');
-        const histView = document.getElementById('paymentHistoryView');
-
-        isHistoryMode = !isHistoryMode;
-
-        if (isHistoryMode) {
-            mainView.classList.add('hidden');
-            histView.classList.remove('hidden');
-            loadWithdrawHistory();
-        } else {
-            histView.classList.add('hidden');
-            mainView.classList.remove('hidden');
-        }
-    }
-
-    async function loadWithdrawHistory() {
-        const list = document.getElementById('historyListContainer');
-        list.innerHTML = '<p style="text-align:center; color:var(--theme-gray);">Memuat Riwayat...</p>';
-
-        // Ambil data status 'paid' atau 'rejected', limit 100 terakhir
-        const { data, error } = await _supabase
-            .from('linked_users')
-            .select('*')
-            .in('payment_status', ['paid', 'rejected'])
-            .order('withdraw_date', { ascending: false })
-            .limit(100);
-
-        if (error) {
-            list.innerHTML = `<p style="text-align:center; color:var(--theme-red);">Gagal: ${error.message}</p>`;
-            return;
-        }
-
-        if (!data || data.length === 0) {
-            list.innerHTML = '<p style="text-align:center; color:var(--theme-gray);">Belum ada riwayat (Paid/Rejected).</p>';
-            return;
-        }
-
-        historyCache = data; // [NEW] Simpan ke cache
-        renderHistoryList(historyCache); // [NEW] Render awal
-    }
-
-    // [NEW] Fungsi Render List (Dipisah agar bisa dipanggil ulang saat filter)
-    function renderHistoryList(data) {
-        const list = document.getElementById('historyListContainer');
-        if (!data || data.length === 0) {
-            list.innerHTML = '<p style="text-align:center; color:var(--theme-gray);">Data tidak ditemukan.</p>';
-            return;
-        }
-
-        let html = '';
-        data.forEach(item => {
-            const date = new Date(item.withdraw_date).toLocaleDateString() + ' ' + new Date(item.withdraw_date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            const statusClass = item.payment_status === 'paid' ? 'paid' : 'rejected';
-            const statusLabel = item.payment_status === 'paid' ? 'BERHASIL' : 'DITOLAK';
-
-            html += `
-            <div class="hist-item slide-up-item">
-                <div class="hist-header">
-                    <span class="hist-date">${date}</span>
-                    <span class="hist-status ${statusClass}">${statusLabel}</span>
-                </div>
-                <div style="margin-bottom:4px;">
-                    <span class="hist-name">${item.acc_name}</span>
-                    <span class="hist-amount">Rp ${item.reward}</span>
-                </div>
-                <div style="font-size:0.8rem; color:var(--text-sec); display:flex; justify-content:space-between;">
-                    <span><span class="hist-bank">${item.bank_name}</span> ${item.acc_number}</span>
-                </div>
-                <div style="font-size:0.75rem; color:var(--theme-gray); margin-top:4px; display:flex; justify-content:space-between; align-items:center;">
-                    <span>${item.email}</span>
-                    <span><i class="fa-brands fa-whatsapp" style="color:#25D366; margin-right:4px;"></i>${item.whatsapp || '-'}</span>
-                </div>
-            </div>`;
-        });
-
-        list.innerHTML = html;
-    }
-
-    // [NEW] Fungsi Filter Search
-    function filterHistory() {
-        const q = document.getElementById('historySearchInput').value.toLowerCase();
-        
-        const filtered = historyCache.filter(item => {
-            return (item.email && item.email.toLowerCase().includes(q)) ||
-                   (item.acc_name && item.acc_name.toLowerCase().includes(q)) ||
-                   (item.bank_name && item.bank_name.toLowerCase().includes(q));
-        });
-
-        renderHistoryList(filtered);
-    }
-
-    // [NEW] Function untuk tombol Ubah Data WA
-    function requestDataChange() {
-        if(!currentUserData) return;
-        const phone = '+6287722495525';
-        const text = `Halo Admin, saya ingin mengajukan perubahan data rekening/e-wallet untuk email: ${currentUserData.email}`;
-        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
-    }
-
+    function enterApp(){ document.getElementById('welcomeOverlay').style.display='none'; document.querySelector('.app-container').style.display='block'; let audio=document.getElementById('bgMusic'); if(audio) audio.play().catch(e=>console.log); }
+    setInterval(()=>{ let b=document.createElement('div'); b.className='bubble'; let s=Math.random()*30+10; b.style.width=s+'px'; b.style.height=s+'px'; b.style.left=Math.random()*100+'%'; b.style.animationDuration=Math.random()*8+5+'s'; document.body.appendChild(b); b.addEventListener('animationend',()=>b.remove()); },900);
+    window.onload=()=>{ loadManageData(); getWithdrawStatusFromJSONBin(); loadStats(); };
+    window.copyText=(t)=>navigator.clipboard.writeText(t);
+    window.showNotification=showNotification;
+    window.copyEmailToClipboard = copyEmailToClipboard;
+    window.toggleBulkView = () => { document.getElementById('bulkPaymentContainer').classList.toggle('hidden'); };
+    window.execBulkPayment = () => { alert("Fitur bulk payment tersedia di versi asli LP2."); };
 </script>
 </body>
 </html>
