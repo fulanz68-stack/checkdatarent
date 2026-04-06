@@ -662,6 +662,31 @@
             display: flex;
             gap: 12px;
             margin-bottom: 12px;
+            align-items: center;
+        }
+        .id-info-bubble i {
+            min-width: 20px;
+        }
+        .info-with-icon {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .copy-field-btn {
+            background: rgba(10,132,255,0.3);
+            border: none;
+            color: #0A84FF;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            transition: 0.2s;
+            margin-left: 8px;
+        }
+        .copy-field-btn:hover {
+            background: rgba(10,132,255,0.5);
+            color: #fff;
         }
         .btn-withdraw {
             background: #0A84FF;
@@ -673,6 +698,17 @@
             cursor: pointer;
             width: 100%;
             color: white;
+        }
+        .btn-withdraw-disabled {
+            background: #555;
+            border: none;
+            border-radius: 40px;
+            padding: 12px;
+            font-weight: 700;
+            margin-top: 12px;
+            width: 100%;
+            color: #aaa;
+            cursor: not-allowed;
         }
         .btn-ubah-data {
             background: transparent;
@@ -848,6 +884,24 @@
             color: #fff;
             text-align: center;
             margin-bottom: 12px;
+        }
+        /* Unrestrict special message animation */
+        @keyframes rgbPulse {
+            0% { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+            25% { color: #00ff00; text-shadow: 0 0 5px #00ff00; }
+            50% { color: #0000ff; text-shadow: 0 0 5px #0000ff; }
+            75% { color: #ffff00; text-shadow: 0 0 5px #ffff00; }
+            100% { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        }
+        .unrestrict-special-message {
+            background: rgba(0,0,0,0.6);
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-top: 12px;
+            animation: rgbPulse 1.5s infinite;
         }
 
         /* Prevent image interaction & download globally */
@@ -1171,13 +1225,13 @@
         <div id="statusBadge" class="id-status-pill">STATUS</div>
         <div class="id-reward-label">Total Reward</div>
         <div class="id-reward-val" id="resReward">Rp 0</div>
-        <div class="id-info-bubble"><i class="fa-solid fa-envelope"></i><span id="resEmail">-</span></div>
+        <div class="id-info-bubble"><i class="fa-solid fa-envelope"></i><span id="resEmail">-</span><button class="copy-field-btn" onclick="copyField('resEmail')"><i class="fa-regular fa-copy"></i> Salin</button></div>
         <div id="withdrawSection" class="hidden">
             <h4 style="margin-bottom:12px;">Form Penarikan</h4>
-            <input type="text" id="wdName" placeholder="Atas Nama" readonly>
-            <input type="text" id="wdBank" placeholder="Bank" readonly>
-            <input type="number" id="wdRek" placeholder="No Rekening" readonly>
-            <input type="number" id="wdWA" placeholder="WhatsApp" readonly>
+            <div class="id-info-bubble"><i class="fa-solid fa-user"></i><span id="wdName" style="flex:1">-</span></div>
+            <div class="id-info-bubble"><i class="fa-solid fa-building-columns"></i><span id="wdBank" style="flex:1">-</span></div>
+            <div class="id-info-bubble"><i class="fa-solid fa-credit-card"></i><span id="wdRek" style="flex:1">-</span></div>
+            <div class="id-info-bubble"><i class="fa-brands fa-whatsapp"></i><span id="wdWA" style="flex:1">-</span></div>
             <div id="actionButtons">
                 <button id="cairkanBtn" class="btn-withdraw" onclick="submitWithdraw()">Cairkan Reward</button>
                 <button id="ubahDataBtn" class="btn-ubah-data" onclick="requestDataChange()"><i class="fa-solid fa-pen"></i> Ubah Data</button>
@@ -1260,6 +1314,19 @@
             backdrop: 'rgba(0,0,0,0.8)',
             confirmButtonText: 'Aye, mengerti'
         });
+    }
+
+    function copyField(fieldId) {
+        let element = document.getElementById(fieldId);
+        if (element) {
+            let text = element.innerText || element.value;
+            if (text && text !== '-') {
+                navigator.clipboard.writeText(text);
+                showNotification('Berhasil disalin!');
+            } else {
+                showNotification('Tidak ada data untuk disalin');
+            }
+        }
     }
 
     // ========== JSONBin Functions for Withdraw Toggle ==========
@@ -1400,21 +1467,15 @@
         badge.style.color = style.color;
 
         let wdSec = document.getElementById('withdrawSection');
-        let nameInput = document.getElementById('wdName');
-        let bankInput = document.getElementById('wdBank');
-        let rekInput = document.getElementById('wdRek');
-        let waInput = document.getElementById('wdWA');
+        let nameSpan = document.getElementById('wdName');
+        let bankSpan = document.getElementById('wdBank');
+        let rekSpan = document.getElementById('wdRek');
+        let waSpan = document.getElementById('wdWA');
         
-        [nameInput, bankInput, rekInput, waInput].forEach(inp => {
-            inp.readOnly = true;
-            inp.style.background = 'rgba(0,0,0,0.5)';
-            inp.style.cursor = 'default';
-        });
-        
-        nameInput.value = data.acc_name || '';
-        bankInput.value = data.bank_name || '';
-        rekInput.value = data.acc_number || '';
-        waInput.value = data.whatsapp || '';
+        nameSpan.innerText = data.acc_name || '-';
+        bankSpan.innerText = data.bank_name || '-';
+        rekSpan.innerText = data.acc_number || '-';
+        waSpan.innerText = data.whatsapp || '-';
         
         let actionDiv = document.getElementById('actionButtons');
         let noteDiv = document.getElementById('paymentStatusNote');
@@ -1453,21 +1514,31 @@
             }
         }
 
+        // Update withdraw button based on reward value
+        let cairkanBtn = document.getElementById('cairkanBtn');
+        let rewardValue = parseInt(data.reward) || 0;
+        if (rewardValue <= 0) {
+            cairkanBtn.className = 'btn-withdraw-disabled';
+            cairkanBtn.disabled = true;
+            cairkanBtn.innerText = 'Reward 0 - Tidak Dapat Dicairkan';
+        } else {
+            cairkanBtn.className = 'btn-withdraw';
+            cairkanBtn.disabled = false;
+            cairkanBtn.innerText = 'Cairkan Reward';
+        }
+
         // Status-specific message (always shown)
         let msgContainer = document.getElementById('statusMessageContainer');
         msgContainer.innerHTML = '';
         
-        // Add withdraw closed message if withdraw is closed and user has not yet claimed/paid
-        if (!isWithdrawOpen && (data.payment_status !== 'paid' && data.payment_status !== 'claimed' && data.payment_status !== 'rejected')) {
-            let closedDiv = document.createElement('div');
-            closedDiv.className = 'withdraw-closed-message';
-            closedDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Withdraw sedang ditutup. cek group utama untuk informasi lebih lanjut.';
-            msgContainer.appendChild(closedDiv);
-        }
-        
-        // Add status-specific message
+        // Special message for Unrestrict status with RGB animation
         let statusMsg = getStatusMessage(data.status);
-        if (statusMsg) {
+        if (data.status === 'Unrestric') {
+            let unrestrictDiv = document.createElement('div');
+            unrestrictDiv.className = 'unrestrict-special-message';
+            unrestrictDiv.innerHTML = '🎁 Akun anda berhasil Un-restrict, selamat mendapat Bonus total 270k 🎁';
+            msgContainer.appendChild(unrestrictDiv);
+        } else if (statusMsg) {
             let msgDiv = document.createElement('div');
             msgDiv.className = statusMsg.className;
             msgDiv.style.padding = '12px';
@@ -1477,6 +1548,14 @@
             msgDiv.style.fontWeight = '500';
             msgDiv.innerHTML = statusMsg.message;
             msgContainer.appendChild(msgDiv);
+        }
+        
+        // Add withdraw closed message if withdraw is closed and user has not yet claimed/paid
+        if (!isWithdrawOpen && (data.payment_status !== 'paid' && data.payment_status !== 'claimed' && data.payment_status !== 'rejected')) {
+            let closedDiv = document.createElement('div');
+            closedDiv.className = 'withdraw-closed-message';
+            closedDiv.innerHTML = '<i class="fa-solid fa-lock"></i> Withdraw sedang ditutup. cek group utama untuk informasi lebih lanjut.';
+            msgContainer.appendChild(closedDiv);
         }
         
         modal.classList.add('active');
@@ -1490,11 +1569,17 @@
             return;
         }
         
-        let name = document.getElementById('wdName').value;
-        let bank = document.getElementById('wdBank').value;
-        let rek = document.getElementById('wdRek').value;
-        let wa = document.getElementById('wdWA').value;
-        if(!name || !bank || !rek || !wa) return Swal.fire({title:'Gagal', text:'Lengkapi semua kolom', icon:'warning'});
+        let rewardValue = parseInt(currentUserData?.reward) || 0;
+        if (rewardValue <= 0) {
+            Swal.fire({title:'Gagal', text:'Reward 0 tidak dapat dicairkan', icon:'warning', background:'#1C1C1E', color:'#fff'});
+            return;
+        }
+        
+        let name = document.getElementById('wdName').innerText;
+        let bank = document.getElementById('wdBank').innerText;
+        let rek = document.getElementById('wdRek').innerText;
+        let wa = document.getElementById('wdWA').innerText;
+        if(!name || name === '-' || !bank || bank === '-' || !rek || rek === '-' || !wa || wa === '-') return Swal.fire({title:'Gagal', text:'Lengkapi semua kolom', icon:'warning', background:'#1C1C1E', color:'#fff'});
         
         Swal.fire({
             title: 'Mengirim Permintaan',
