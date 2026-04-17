@@ -1052,7 +1052,7 @@
                         <button class="btn btn-sewa" onclick="toggleHistoryView()" style="margin-bottom: 8px;">
                             <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transfer
                         </button>
-                        <button class="btn btn-sm" onclick="resetPaymentHistory()" style="width:100%; margin-top:4px; background:rgba(255,69,58,0.2); color:#FF453A; border:1px solid rgba(255,69,58,0.3);">
+                        <button class="btn btn-sm" onclick="confirmResetPaymentHistory()" style="width:100%; margin-top:4px; background:rgba(255,69,58,0.2); color:#FF453A; border:1px solid rgba(255,69,58,0.3);">
                             <i class="fa-solid fa-trash-can"></i> Reset SEMUA
                         </button>
                     </div>
@@ -1714,7 +1714,61 @@
     async function markAsPaid(id,link){ await _supabase.from('linked_users').update({payment_status:'paid'}).eq('id',id); paymentQueue.shift(); window.open(link,'_blank'); renderActivePayment(); loadPaymentStats(); }
     async function rejectPayment(id,wa,amt){ let {value:reason}=await Swal.fire({title:'Alasan Penolakan',input:'text'}); if(reason){ await _supabase.from('linked_users').update({payment_status:'rejected'}).eq('id',id); paymentQueue.shift(); window.open(`https://wa.me/${wa}?text=${encodeURIComponent(`Penarikan Rp ${amt} ditolak. Alasan: ${reason}`)}`,'_blank'); renderActivePayment(); loadPaymentStats(); } }
     async function loadPaymentStats(){ let {count:p}=await _supabase.from('linked_users').select('*',{count:'exact',head:true}).eq('payment_status','claimed'); let {count:pa}=await _supabase.from('linked_users').select('*',{count:'exact',head:true}).eq('payment_status','paid'); document.getElementById('stat-pending').innerText=p||0; document.getElementById('stat-paid').innerText=pa||0; }
-    async function resetPaymentHistory(){ await _supabase.from('linked_users').update({payment_status:'archived'}).in('payment_status',['claimed','paid','rejected']); loadPaymentStats(); loadPaymentTracking(); }
+    
+    // Updated resetPaymentHistory with confirmation and black blur background
+    async function confirmResetPaymentHistory() {
+        const result = await Swal.fire({
+            title: 'PERINGATAN!',
+            html: `<div style="color: #FF453A; margin-bottom: 15px;">⚠️ TINDAKAN INI TIDAK DAPAT DIURUNGKAN ⚠️</div>
+                   <div style="margin-bottom: 15px;">Reset SEMUA akan mengubah status semua user yang memiliki status <strong>claimed, paid, rejected</strong> menjadi <strong>archived</strong>.</div>
+                   <div>Ketik <strong style="color: #FF453A;">HAPUS</strong> untuk melanjutkan:</div>
+                   <input type="text" id="confirmResetInput" class="swal2-input" placeholder="HAPUS" style="margin-top: 10px;">`,
+            background: 'rgba(0, 0, 0, 0.85)',
+            backdrop: 'blur(10px)',
+            color: '#fff',
+            showCancelButton: true,
+            confirmButtonColor: '#FF453A',
+            cancelButtonColor: '#3A3A3C',
+            confirmButtonText: 'Reset SEMUA',
+            cancelButtonText: 'Batal',
+            preConfirm: () => {
+                const inputValue = document.getElementById('confirmResetInput').value;
+                if (inputValue !== 'HAPUS') {
+                    Swal.showValidationMessage('Ketik "HAPUS" untuk melanjutkan reset');
+                    return false;
+                }
+                return true;
+            }
+        });
+        
+        if (result.isConfirmed) {
+            Swal.fire({
+                title: 'Memproses Reset...',
+                html: `<div class="pirate-loading"><i class="fas fa-anchor anchor-pulse"></i> <span>Menghapus semua data payment...</span></div>`,
+                background: 'rgba(0,0,0,0.8)',
+                backdrop: 'blur(10px)',
+                color: '#ffd966',
+                showConfirmButton: false,
+                allowOutsideClick: false
+            });
+            
+            await _supabase.from('linked_users').update({payment_status:'archived'}).in('payment_status',['claimed','paid','rejected']);
+            
+            Swal.close();
+            Swal.fire({
+                title: 'Reset Berhasil!',
+                text: 'Semua status payment telah direset menjadi archived.',
+                icon: 'success',
+                background: 'rgba(0, 0, 0, 0.85)',
+                backdrop: 'blur(10px)',
+                color: '#fff',
+                confirmButtonColor: '#0A84FF'
+            });
+            loadPaymentStats();
+            loadPaymentTracking();
+        }
+    }
+    
     let isHistoryModeFlag=false; function toggleHistoryView(){ isHistoryModeFlag=!isHistoryModeFlag; document.getElementById('paymentMainView').classList.toggle('hidden'); document.getElementById('paymentHistoryView').classList.toggle('hidden'); if(isHistoryModeFlag) loadWithdrawHistory(); }
     async function loadWithdrawHistory(){ let {data}=await _supabase.from('linked_users').select('*').in('payment_status',['paid','rejected']).order('withdraw_date',{ascending:false}).limit(100); historyCache=data||[]; renderHistoryList(historyCache); }
     function renderHistoryList(data){ let container=document.getElementById('historyListContainer'); if(!container) return; container.innerHTML=data.map(h=>`<div class="hist-item"><div>${new Date(h.withdraw_date).toLocaleDateString()} - ${h.payment_status==='paid'?'BERHASIL':'DITOLAK'}</div><div>${h.acc_name} - Rp ${h.reward}</div><div>${h.email}</div></div>`).join(''); }
